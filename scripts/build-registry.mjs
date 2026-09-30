@@ -912,7 +912,13 @@ const catalog = {
       )
     ),
     ...iconSetItems.map((item) =>
-      catalogItem(item.name, item.title, item.description, item.deps, item.files)
+      catalogItem(
+        item.name,
+        item.title,
+        item.description,
+        item.deps,
+        item.files
+      )
     ),
   ],
   name: "editorcn",
