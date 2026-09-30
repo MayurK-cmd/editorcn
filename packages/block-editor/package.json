@@ -40,11 +40,6 @@
   },
   "peerDependencies": {
     "@base-ui/react": "^1.0.0",
-    "@hugeicons/core-free-icons": ">=1.0.0 <5",
-    "@hugeicons/react": ">=1.0.0 <2",
-    "@phosphor-icons/react": ">=2.0.0 <3",
-    "@remixicon/react": ">=4.0.0 <5",
-    "@tabler/icons-react": ">=3.0.0 <4",
     "@tiptap/core": ">=3.0.0 <4",
     "@tiptap/extension-code-block-lowlight": ">=3.0.0 <4",
     "@tiptap/extension-collaboration": ">=3.0.0 <4",
@@ -64,21 +59,6 @@
     "react-dom": "^18 || ^19"
   },
   "peerDependenciesMeta": {
-    "@hugeicons/core-free-icons": {
-      "optional": true
-    },
-    "@hugeicons/react": {
-      "optional": true
-    },
-    "@phosphor-icons/react": {
-      "optional": true
-    },
-    "@remixicon/react": {
-      "optional": true
-    },
-    "@tabler/icons-react": {
-      "optional": true
-    },
     "@tiptap/extension-code-block-lowlight": {
       "optional": true
     },

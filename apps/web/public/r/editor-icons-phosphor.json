@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "dependencies": [
+    "@phosphor-icons/react@^2.1.10"
+  ],
+  "description": "Phosphor Icons variant of the Rich Text Editor icons. Install after the editor item; overwrites editor/icons.tsx.",
+  "files": [
+    {
+      "content": "import {\r\n  ArrowClockwise,\r\n  ArrowCounterClockwise,\r\n  Code,\r\n  CodeBlock,\r\n  Eraser,\r\n  Highlighter,\r\n  Link,\r\n  LinkBreak,\r\n  ListBullets,\r\n  ListNumbers,\r\n  Minus,\r\n  Quotes,\r\n  TextAlignCenter,\r\n  TextAlignJustify,\r\n  TextAlignLeft,\r\n  TextAlignRight,\r\n  TextB,\r\n  TextHFive,\r\n  TextHFour,\r\n  TextHOne,\r\n  TextHSix,\r\n  TextHThree,\r\n  TextHTwo,\r\n  TextItalic,\r\n  TextStrikethrough,\r\n  TextSubscript,\r\n  TextSuperscript,\r\n  TextUnderline,\r\n} from \"@phosphor-icons/react\";\r\n\r\nimport type { RichTextEditorIcons } from \"./icons\";\r\nimport { DEFAULT_LANGUAGE_ICONS } from \"./language-icons\";\r\n\r\nconst iconProps = { className: \"rte-editor-icon\" };\r\n\r\n// Phosphor Icons preset for BlockEditor (\"iconLibrary\": \"phosphor\", @phosphor-icons/react).\r\nexport const DEFAULT_ICONS: RichTextEditorIcons = {\r\n  alignCenterControlIcon: <TextAlignCenter {...iconProps} />,\r\n  alignJustifyControlIcon: <TextAlignJustify {...iconProps} />,\r\n  alignLeftControlIcon: <TextAlignLeft {...iconProps} />,\r\n  alignRightControlIcon: <TextAlignRight {...iconProps} />,\r\n  blockquoteControlIcon: <Quotes {...iconProps} />,\r\n  boldControlIcon: <TextB {...iconProps} />,\r\n  bulletListControlIcon: <ListBullets {...iconProps} />,\r\n  clearFormattingControlIcon: <Eraser {...iconProps} />,\r\n  codeBlockControlIcon: <CodeBlock {...iconProps} />,\r\n  codeControlIcon: <Code {...iconProps} />,\r\n  h1ControlIcon: <TextHOne {...iconProps} />,\r\n  h2ControlIcon: <TextHTwo {...iconProps} />,\r\n  h3ControlIcon: <TextHThree {...iconProps} />,\r\n  h4ControlIcon: <TextHFour {...iconProps} />,\r\n  h5ControlIcon: <TextHFive {...iconProps} />,\r\n  h6ControlIcon: <TextHSix {...iconProps} />,\r\n  highlightControlIcon: <Highlighter {...iconProps} />,\r\n  hrControlIcon: <Minus {...iconProps} />,\r\n  italicControlIcon: <TextItalic {...iconProps} />,\r\n  languageIcons: DEFAULT_LANGUAGE_ICONS,\r\n  linkControlIcon: <Link {...iconProps} />,\r\n  orderedListControlIcon: <ListNumbers {...iconProps} />,\r\n  redoControlIcon: <ArrowClockwise {...iconProps} />,\r\n  strikeControlIcon: <TextStrikethrough {...iconProps} />,\r\n  subscriptControlIcon: <TextSubscript {...iconProps} />,\r\n  superscriptControlIcon: <TextSuperscript {...iconProps} />,\r\n  underlineControlIcon: <TextUnderline {...iconProps} />,\r\n  undoControlIcon: <ArrowCounterClockwise {...iconProps} />,\r\n  unlinkControlIcon: <LinkBreak {...iconProps} />,\r\n};\r\n",
+      "path": "editor/icons.tsx",
+      "target": "@components/editor/icons.tsx",
+      "type": "registry:component"
+    }
+  ],
+  "name": "editor-icons-phosphor",
+  "title": "Rich Text Editor (Phosphor Icons)",
+  "type": "registry:component"
+}

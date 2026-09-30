@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "dependencies": [
+    "@phosphor-icons/react@^2.1.10"
+  ],
+  "description": "Phosphor Icons variant of the Block Editor icons. Install after the block-editor item; overwrites block-editor/icons.tsx.",
+  "files": [
+    {
+      "content": "import {\r\n  BracketsCurly,\r\n  CaretDown,\r\n  Check,\r\n  Code,\r\n  CodeBlock,\r\n  Copy,\r\n  DotsSixVertical,\r\n  FileText,\r\n  Image,\r\n  Link,\r\n  LinkBreak,\r\n  ListBullets,\r\n  ListChecks,\r\n  ListNumbers,\r\n  MagnifyingGlass,\r\n  Minus,\r\n  Quotes,\r\n  Table,\r\n  TextAlignCenter,\r\n  TextAlignLeft,\r\n  TextAlignRight,\r\n  TextB,\r\n  TextH,\r\n  TextItalic,\r\n  TextStrikethrough,\r\n  TextT,\r\n  TextUnderline,\r\n  Trash,\r\n} from \"@phosphor-icons/react\";\r\n\r\nimport type { BlockEditorIcons } from \"./icons\";\r\nimport { DEFAULT_LANGUAGE_ICONS } from \"./language-icons\";\r\n\r\n// Phosphor Icons preset for BlockEditor (\"iconLibrary\": \"phosphor\", @phosphor-icons/react).\r\nexport const DEFAULT_ICONS: BlockEditorIcons = {\r\n  alignCenterIcon: <TextAlignCenter />,\r\n  alignLeftIcon: <TextAlignLeft />,\r\n  alignRightIcon: <TextAlignRight />,\r\n  boldIcon: <TextB />,\r\n  checkIcon: <Check />,\r\n  codeBlockLanguageIcon: <BracketsCurly />,\r\n  codeIcon: <Code />,\r\n  copyIcon: <Copy />,\r\n  deleteIcon: <Trash />,\r\n  dragHandleIcon: <DotsSixVertical className=\"block-editor-drag-handle-icon\" />,\r\n  dropdownArrowIcon: <CaretDown size={12} />,\r\n  fallbackIcon: <FileText />,\r\n  italicIcon: <TextItalic />,\r\n  languageIcons: DEFAULT_LANGUAGE_ICONS,\r\n  linkIcon: <Link />,\r\n  searchIcon: <MagnifyingGlass size={14} />,\r\n  slashBlockquoteIcon: <Quotes />,\r\n  slashBulletListIcon: <ListBullets />,\r\n  slashCodeBlockIcon: <CodeBlock />,\r\n  slashDividerIcon: <Minus />,\r\n  slashHeadingIcon: <TextH />,\r\n  slashImageIcon: <Image />,\r\n  slashOrderedListIcon: <ListNumbers />,\r\n  slashTableIcon: <Table />,\r\n  slashTaskListIcon: <ListChecks />,\r\n  slashTextIcon: <TextT />,\r\n  strikethroughIcon: <TextStrikethrough />,\r\n  underlineIcon: <TextUnderline />,\r\n  unlinkIcon: <LinkBreak />,\r\n};\r\n",
+      "path": "block-editor/icons.tsx",
+      "target": "@components/block-editor/icons.tsx",
+      "type": "registry:component"
+    }
+  ],
+  "name": "block-editor-icons-phosphor",
+  "title": "Block Editor (Phosphor Icons)",
+  "type": "registry:component"
+}

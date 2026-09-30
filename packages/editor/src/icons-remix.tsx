@@ -30,23 +30,12 @@ import {
 } from "@remixicon/react";
 
 import type { RichTextEditorIcons } from "./icons";
-import { DEFAULT_LANGUAGE_ICONS } from "./icons";
+import { DEFAULT_LANGUAGE_ICONS } from "./language-icons";
 
 const iconProps = { className: "rte-editor-icon" };
 
-/**
- * Remix Icon preset for `RichTextEditor`.
- *
- * Pairs with `"iconLibrary": "remixicon"` in `components.json`
- * (`@remixicon/react`). Pass it via the `icons` prop:
- *
- * ```tsx
- * import { remixEditorIcons } from "@/components/editor/icons-remix";
- *
- * <RichTextEditor editor={editor} icons={remixEditorIcons} />;
- * ```
- */
-export const remixEditorIcons: RichTextEditorIcons = {
+// Remix Icons preset for BlockEditor ("iconLibrary": "remixicon", @remixicon/react).
+export const DEFAULT_ICONS: RichTextEditorIcons = {
   alignCenterControlIcon: <RiAlignCenter {...iconProps} />,
   alignJustifyControlIcon: <RiAlignJustify {...iconProps} />,
   alignLeftControlIcon: <RiAlignLeft {...iconProps} />,

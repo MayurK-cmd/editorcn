@@ -257,34 +257,19 @@ The `rte-editor-icon` class controls icon sizing in the toolbar. Apply it to you
 
 See the [Styling docs](/docs/styling#change-icon-size) for more on sizing.
 
-### Icon Library Presets
+### Icon Library
 
-The defaults above use **lucide-react**. If your `components.json` uses a
-different `iconLibrary`, import the matching preset instead of overriding
-icons one by one. Install the library's package first:
+The toolbar icons ship with **lucide-react**. If your `components.json` uses a different `iconLibrary`, install the matching set after the editor — it overwrites `editor/icons.tsx` and installs only that set's package:
 
-| `iconLibrary` | Package(s) | Preset |
-| --- | --- | --- |
-| `lucide` (default) | `lucide-react` | built-in `DEFAULT_ICONS` |
-| `phosphor` | `@phosphor-icons/react` | `phosphorEditorIcons` |
-| `tabler` | `@tabler/icons-react` | `tablerEditorIcons` |
-| `hugeicons` | `@hugeicons/react` + `@hugeicons/core-free-icons` | `hugeiconsEditorIcons` |
-| `remixicon` | `@remixicon/react` | `remixEditorIcons` |
+| `iconLibrary` | Install |
+| --- | --- |
+| `lucide` (default) | nothing — already included |
+| `phosphor` | `npx shadcn@latest add "https://editorcn.vercel.app/r/editor-icons-phosphor.json"` |
+| `tabler` | `npx shadcn@latest add "https://editorcn.vercel.app/r/editor-icons-tabler.json"` |
+| `hugeicons` | `npx shadcn@latest add "https://editorcn.vercel.app/r/editor-icons-hugeicons.json"` |
+| `remixicon` | `npx shadcn@latest add "https://editorcn.vercel.app/r/editor-icons-remixicon.json"` |
 
-<EditorIconLibraryDemo />
-
-```tsx
-import { phosphorEditorIcons } from "@/components/editor/icons-phosphor";
-
-<RichTextEditor editor={editor} icons={phosphorEditorIcons}>
-  ...
-</RichTextEditor>;
-```
-
-You can still override individual keys on top of a preset
-(`icons={{ ...phosphorEditorIcons, boldControlIcon: <CustomBold /> }}`).
-For files outside `icons.tsx`, run the shadcn CLI migration after install:
-`npx shadcn@latest migrate icons --from lucide --to phosphor "src/components/editor/**"`.
+To migrate an existing install instead: `npx shadcn@latest migrate icons --from lucide --to phosphor "src/components/editor/**"`.
 
 ## BlockEditor
 
@@ -378,22 +363,15 @@ Custom items appear at the top of the menu. Built-in items with the same `id` ar
 
 Replace any built-in icon via the `icons` prop. All 28 icons accept a React node — use inline SVGs, emoji, or any icon library. The defaults come from **lucide-react** and inherit your theme automatically (`currentColor`).
 
-If your `components.json` uses a different `iconLibrary`, import the matching preset instead. Install the library's package first:
+If your `components.json` uses a different `iconLibrary`, install the matching set after the block editor — it overwrites `block-editor/icons.tsx` and installs only that set's package:
 
-| `iconLibrary` | Package(s) | Preset |
-| --- | --- | --- |
-| `lucide` (default) | `lucide-react` | built-in `DEFAULT_ICONS` |
-| `phosphor` | `@phosphor-icons/react` | `phosphorBlockEditorIcons` |
-| `tabler` | `@tabler/icons-react` | `tablerBlockEditorIcons` |
-| `hugeicons` | `@hugeicons/react` + `@hugeicons/core-free-icons` | `hugeiconsBlockEditorIcons` |
-| `remixicon` | `@remixicon/react` | `remixBlockEditorIcons` |
-
-```tsx
-import { BlockEditor } from "@/components/block-editor";
-import { phosphorBlockEditorIcons } from "@/components/block-editor/icons-phosphor";
-
-<BlockEditor editor={editor} icons={phosphorBlockEditorIcons} />;
-```
+| `iconLibrary` | Install |
+| --- | --- |
+| `lucide` (default) | nothing — already included |
+| `phosphor` | `npx shadcn@latest add "https://editorcn.vercel.app/r/block-editor-icons-phosphor.json"` |
+| `tabler` | `npx shadcn@latest add "https://editorcn.vercel.app/r/block-editor-icons-tabler.json"` |
+| `hugeicons` | `npx shadcn@latest add "https://editorcn.vercel.app/r/block-editor-icons-hugeicons.json"` |
+| `remixicon` | `npx shadcn@latest add "https://editorcn.vercel.app/r/block-editor-icons-remixicon.json"` |
 
 ```tsx
 import { BlockEditor, DEFAULT_ICONS } from "@/components/block-editor";

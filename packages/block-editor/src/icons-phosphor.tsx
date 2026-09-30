@@ -30,21 +30,10 @@ import {
 } from "@phosphor-icons/react";
 
 import type { BlockEditorIcons } from "./icons";
-import { DEFAULT_LANGUAGE_ICONS } from "./icons";
+import { DEFAULT_LANGUAGE_ICONS } from "./language-icons";
 
-/**
- * Phosphor Icons preset for `BlockEditor`.
- *
- * Pairs with `"iconLibrary": "phosphor"` in `components.json`
- * (`@phosphor-icons/react`). Pass it via the `icons` prop:
- *
- * ```tsx
- * import { phosphorBlockEditorIcons } from "@/components/block-editor/icons-phosphor";
- *
- * <BlockEditor editor={editor} icons={phosphorBlockEditorIcons} />;
- * ```
- */
-export const phosphorBlockEditorIcons: BlockEditorIcons = {
+// Phosphor Icons preset for BlockEditor ("iconLibrary": "phosphor", @phosphor-icons/react).
+export const DEFAULT_ICONS: BlockEditorIcons = {
   alignCenterIcon: <TextAlignCenter />,
   alignLeftIcon: <TextAlignLeft />,
   alignRightIcon: <TextAlignRight />,

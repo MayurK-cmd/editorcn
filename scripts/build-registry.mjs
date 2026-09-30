@@ -53,34 +53,10 @@ const editorFiles = [
   entry("editor/labels.ts", "registry:component", "editor", "labels.ts"),
   entry("editor/icons.tsx", "registry:component", "editor", "icons.tsx"),
   entry(
-    "editor/icon-library.ts",
+    "editor/language-icons.tsx",
     "registry:component",
     "editor",
-    "icon-library.ts"
-  ),
-  entry(
-    "editor/icons-phosphor.tsx",
-    "registry:component",
-    "editor",
-    "icons-phosphor.tsx"
-  ),
-  entry(
-    "editor/icons-tabler.tsx",
-    "registry:component",
-    "editor",
-    "icons-tabler.tsx"
-  ),
-  entry(
-    "editor/icons-hugeicons.tsx",
-    "registry:component",
-    "editor",
-    "icons-hugeicons.tsx"
-  ),
-  entry(
-    "editor/icons-remix.tsx",
-    "registry:component",
-    "editor",
-    "icons-remix.tsx"
+    "language-icons.tsx"
   ),
   entry("editor/types.ts", "registry:component", "editor", "types.ts"),
   entry("editor/style.css", "registry:style", "editor", "style.css"),
@@ -331,34 +307,10 @@ const blockEditorFiles = [
     "icons.tsx"
   ),
   entry(
-    "block-editor/icon-library.ts",
+    "block-editor/language-icons.tsx",
     "registry:component",
     "block-editor",
-    "icon-library.ts"
-  ),
-  entry(
-    "block-editor/icons-phosphor.tsx",
-    "registry:component",
-    "block-editor",
-    "icons-phosphor.tsx"
-  ),
-  entry(
-    "block-editor/icons-tabler.tsx",
-    "registry:component",
-    "block-editor",
-    "icons-tabler.tsx"
-  ),
-  entry(
-    "block-editor/icons-hugeicons.tsx",
-    "registry:component",
-    "block-editor",
-    "icons-hugeicons.tsx"
-  ),
-  entry(
-    "block-editor/icons-remix.tsx",
-    "registry:component",
-    "block-editor",
-    "icons-remix.tsx"
+    "language-icons.tsx"
   ),
   entry(
     "block-editor/labels.ts",
@@ -544,6 +496,50 @@ const staticRendererFiles = [
     "style.css"
   ),
 ];
+
+const iconSetEntry = (dir, pkg, set) => {
+  const path = `${dir}/icons.tsx`;
+  const src = `icons-${set === "remixicon" ? "remix" : set}.tsx`;
+  return {
+    content: read(pkg, src),
+    path,
+    target: `@components/${path}`,
+    type: "registry:component",
+  };
+};
+
+const iconSetDeps = {
+  hugeicons: ["@hugeicons/react@^1.1.10", "@hugeicons/core-free-icons@^4.3.5"],
+  phosphor: ["@phosphor-icons/react@^2.1.10"],
+  remixicon: ["@remixicon/react@^4.9.0"],
+  tabler: ["@tabler/icons-react@^3.48.0"],
+};
+
+const iconSetTitles = {
+  hugeicons: "HugeIcons",
+  phosphor: "Phosphor Icons",
+  remixicon: "Remix Icon",
+  tabler: "Tabler Icons",
+};
+
+const iconSetItems = ["phosphor", "tabler", "hugeicons", "remixicon"].flatMap(
+  (set) => [
+    {
+      deps: iconSetDeps[set],
+      description: `${iconSetTitles[set]} variant of the Rich Text Editor icons. Install after the editor item; overwrites editor/icons.tsx.`,
+      files: [iconSetEntry("editor", "editor", set)],
+      name: `editor-icons-${set}`,
+      title: `Rich Text Editor (${iconSetTitles[set]})`,
+    },
+    {
+      deps: iconSetDeps[set],
+      description: `${iconSetTitles[set]} variant of the Block Editor icons. Install after the block-editor item; overwrites block-editor/icons.tsx.`,
+      files: [iconSetEntry("block-editor", "block-editor", set)],
+      name: `block-editor-icons-${set}`,
+      title: `Block Editor (${iconSetTitles[set]})`,
+    },
+  ]
+);
 
 const extensionCoreFiles = [
   "index.ts",
@@ -870,6 +866,17 @@ for (const item of extensionsItems) {
   );
 }
 
+for (const item of iconSetItems) {
+  writeFileSync(
+    resolve(outDir, `${item.name}.json`),
+    JSON.stringify(
+      buildItem(item.name, item.title, item.description, item.files, item.deps),
+      null,
+      2
+    )
+  );
+}
+
 const catalog = {
   $schema: "https://ui.shadcn.com/schema/registry.json",
   homepage: "https://editorcn.vercel.app",
@@ -904,6 +911,9 @@ const catalog = {
         item.files
       )
     ),
+    ...iconSetItems.map((item) =>
+      catalogItem(item.name, item.title, item.description, item.deps, item.files)
+    ),
   ],
   name: "editorcn",
 };
@@ -918,5 +928,8 @@ console.log("  apps/web/public/r/editor.json");
 console.log("  apps/web/public/r/block-editor.json");
 console.log("  apps/web/public/r/static-renderer.json");
 for (const item of extensionsItems) {
+  console.log(`  apps/web/public/r/${item.name}.json`);
+}
+for (const item of iconSetItems) {
   console.log(`  apps/web/public/r/${item.name}.json`);
 }

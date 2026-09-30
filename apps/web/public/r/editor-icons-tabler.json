@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "dependencies": [
+    "@tabler/icons-react@^3.48.0"
+  ],
+  "description": "Tabler Icons variant of the Rich Text Editor icons. Install after the editor item; overwrites editor/icons.tsx.",
+  "files": [
+    {
+      "content": "import {\r\n  IconAlignCenter,\r\n  IconAlignJustified,\r\n  IconAlignLeft,\r\n  IconAlignRight,\r\n  IconArrowBackUp,\r\n  IconArrowForwardUp,\r\n  IconBold,\r\n  IconCode,\r\n  IconEraser,\r\n  IconH1,\r\n  IconH2,\r\n  IconH3,\r\n  IconH4,\r\n  IconH5,\r\n  IconH6,\r\n  IconHighlight,\r\n  IconItalic,\r\n  IconLink,\r\n  IconList,\r\n  IconListNumbers,\r\n  IconMinus,\r\n  IconQuote,\r\n  IconSourceCode,\r\n  IconStrikethrough,\r\n  IconSubscript,\r\n  IconSuperscript,\r\n  IconUnderline,\r\n  IconUnlink,\r\n} from \"@tabler/icons-react\";\r\n\r\nimport type { RichTextEditorIcons } from \"./icons\";\r\nimport { DEFAULT_LANGUAGE_ICONS } from \"./language-icons\";\r\n\r\nconst iconProps = { className: \"rte-editor-icon\" };\r\n\r\n// Tabler Icons preset for BlockEditor (\"iconLibrary\": \"tabler\", @tabler/icons-react).\r\nexport const DEFAULT_ICONS: RichTextEditorIcons = {\r\n  alignCenterControlIcon: <IconAlignCenter {...iconProps} />,\r\n  alignJustifyControlIcon: <IconAlignJustified {...iconProps} />,\r\n  alignLeftControlIcon: <IconAlignLeft {...iconProps} />,\r\n  alignRightControlIcon: <IconAlignRight {...iconProps} />,\r\n  blockquoteControlIcon: <IconQuote {...iconProps} />,\r\n  boldControlIcon: <IconBold {...iconProps} />,\r\n  bulletListControlIcon: <IconList {...iconProps} />,\r\n  clearFormattingControlIcon: <IconEraser {...iconProps} />,\r\n  codeBlockControlIcon: <IconSourceCode {...iconProps} />,\r\n  codeControlIcon: <IconCode {...iconProps} />,\r\n  h1ControlIcon: <IconH1 {...iconProps} />,\r\n  h2ControlIcon: <IconH2 {...iconProps} />,\r\n  h3ControlIcon: <IconH3 {...iconProps} />,\r\n  h4ControlIcon: <IconH4 {...iconProps} />,\r\n  h5ControlIcon: <IconH5 {...iconProps} />,\r\n  h6ControlIcon: <IconH6 {...iconProps} />,\r\n  highlightControlIcon: <IconHighlight {...iconProps} />,\r\n  hrControlIcon: <IconMinus {...iconProps} />,\r\n  italicControlIcon: <IconItalic {...iconProps} />,\r\n  languageIcons: DEFAULT_LANGUAGE_ICONS,\r\n  linkControlIcon: <IconLink {...iconProps} />,\r\n  orderedListControlIcon: <IconListNumbers {...iconProps} />,\r\n  redoControlIcon: <IconArrowForwardUp {...iconProps} />,\r\n  strikeControlIcon: <IconStrikethrough {...iconProps} />,\r\n  subscriptControlIcon: <IconSubscript {...iconProps} />,\r\n  superscriptControlIcon: <IconSuperscript {...iconProps} />,\r\n  underlineControlIcon: <IconUnderline {...iconProps} />,\r\n  undoControlIcon: <IconArrowBackUp {...iconProps} />,\r\n  unlinkControlIcon: <IconUnlink {...iconProps} />,\r\n};\r\n",
+      "path": "editor/icons.tsx",
+      "target": "@components/editor/icons.tsx",
+      "type": "registry:component"
+    }
+  ],
+  "name": "editor-icons-tabler",
+  "title": "Rich Text Editor (Tabler Icons)",
+  "type": "registry:component"
+}

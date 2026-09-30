@@ -105,21 +105,6 @@ importers:
       '@floating-ui/dom':
         specifier: ^1.6.0
         version: 1.7.6
-      '@hugeicons/core-free-icons':
-        specifier: ^4.3.5
-        version: 4.3.5
-      '@hugeicons/react':
-        specifier: ^1.1.10
-        version: 1.1.10(react@19.2.7)
-      '@phosphor-icons/react':
-        specifier: ^2.1.10
-        version: 2.1.10(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@remixicon/react':
-        specifier: ^4.9.0
-        version: 4.9.0(react@19.2.7)
-      '@tabler/icons-react':
-        specifier: ^3.48.0
-        version: 3.48.0(react@19.2.7)
       '@tiptap/core':
         specifier: ^3.0.0
         version: 3.30.5(@tiptap/pm@3.30.5)

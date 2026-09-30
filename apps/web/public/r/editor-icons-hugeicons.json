@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "dependencies": [
+    "@hugeicons/react@^1.1.10",
+    "@hugeicons/core-free-icons@^4.3.5"
+  ],
+  "description": "HugeIcons variant of the Rich Text Editor icons. Install after the editor item; overwrites editor/icons.tsx.",
+  "files": [
+    {
+      "content": "import {\r\n  BoldIcon,\r\n  Heading01Icon,\r\n  Heading02Icon,\r\n  Heading03Icon,\r\n  Heading04Icon,\r\n  Heading05Icon,\r\n  Heading06Icon,\r\n  HighlighterIcon,\r\n  ItalicIcon,\r\n  LeftToRightBlockQuoteIcon,\r\n  LeftToRightListBulletIcon,\r\n  LeftToRightListNumberIcon,\r\n  Link01Icon,\r\n  MinusSignIcon,\r\n  RedoIcon,\r\n  SourceCodeIcon,\r\n  SourceCodeSquareIcon,\r\n  StrikethroughIcon,\r\n  SubscriptIcon,\r\n  SuperscriptIcon,\r\n  TextAlignCenterIcon,\r\n  TextAlignJustifyCenterIcon,\r\n  TextAlignLeftIcon,\r\n  TextAlignRightIcon,\r\n  TextClearIcon,\r\n  UnderlineIcon,\r\n  UndoIcon,\r\n  UnlinkIcon,\r\n} from \"@hugeicons/core-free-icons\";\r\nimport { HugeiconsIcon } from \"@hugeicons/react\";\r\n\r\nimport type { RichTextEditorIcons } from \"./icons\";\r\nimport { DEFAULT_LANGUAGE_ICONS } from \"./language-icons\";\r\n\r\nconst iconProps = {\r\n  className: \"rte-editor-icon\",\r\n  strokeWidth: 2,\r\n} as const;\r\n\r\nconst H = ({ icon }: { icon: typeof BoldIcon }) => (\r\n  <HugeiconsIcon icon={icon} {...iconProps} />\r\n);\r\n\r\n// HugeIcons Icons preset for BlockEditor (\"iconLibrary\": \"hugeicons\", @hugeicons/react + @hugeicons/core-free-icons).\r\nexport const DEFAULT_ICONS: RichTextEditorIcons = {\r\n  alignCenterControlIcon: <H icon={TextAlignCenterIcon} />,\r\n  alignJustifyControlIcon: <H icon={TextAlignJustifyCenterIcon} />,\r\n  alignLeftControlIcon: <H icon={TextAlignLeftIcon} />,\r\n  alignRightControlIcon: <H icon={TextAlignRightIcon} />,\r\n  blockquoteControlIcon: <H icon={LeftToRightBlockQuoteIcon} />,\r\n  boldControlIcon: <H icon={BoldIcon} />,\r\n  bulletListControlIcon: <H icon={LeftToRightListBulletIcon} />,\r\n  clearFormattingControlIcon: <H icon={TextClearIcon} />,\r\n  codeBlockControlIcon: <H icon={SourceCodeSquareIcon} />,\r\n  codeControlIcon: <H icon={SourceCodeIcon} />,\r\n  h1ControlIcon: <H icon={Heading01Icon} />,\r\n  h2ControlIcon: <H icon={Heading02Icon} />,\r\n  h3ControlIcon: <H icon={Heading03Icon} />,\r\n  h4ControlIcon: <H icon={Heading04Icon} />,\r\n  h5ControlIcon: <H icon={Heading05Icon} />,\r\n  h6ControlIcon: <H icon={Heading06Icon} />,\r\n  highlightControlIcon: <H icon={HighlighterIcon} />,\r\n  hrControlIcon: <H icon={MinusSignIcon} />,\r\n  italicControlIcon: <H icon={ItalicIcon} />,\r\n  languageIcons: DEFAULT_LANGUAGE_ICONS,\r\n  linkControlIcon: <H icon={Link01Icon} />,\r\n  orderedListControlIcon: <H icon={LeftToRightListNumberIcon} />,\r\n  redoControlIcon: <H icon={RedoIcon} />,\r\n  strikeControlIcon: <H icon={StrikethroughIcon} />,\r\n  subscriptControlIcon: <H icon={SubscriptIcon} />,\r\n  superscriptControlIcon: <H icon={SuperscriptIcon} />,\r\n  underlineControlIcon: <H icon={UnderlineIcon} />,\r\n  undoControlIcon: <H icon={UndoIcon} />,\r\n  unlinkControlIcon: <H icon={UnlinkIcon} />,\r\n};\r\n",
+      "path": "editor/icons.tsx",
+      "target": "@components/editor/icons.tsx",
+      "type": "registry:component"
+    }
+  ],
+  "name": "editor-icons-hugeicons",
+  "title": "Rich Text Editor (HugeIcons)",
+  "type": "registry:component"
+}

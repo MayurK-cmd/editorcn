@@ -30,23 +30,12 @@ import {
 } from "@tabler/icons-react";
 
 import type { RichTextEditorIcons } from "./icons";
-import { DEFAULT_LANGUAGE_ICONS } from "./icons";
+import { DEFAULT_LANGUAGE_ICONS } from "./language-icons";
 
 const iconProps = { className: "rte-editor-icon" };
 
-/**
- * Tabler Icons preset for `RichTextEditor`.
- *
- * Pairs with `"iconLibrary": "tabler"` in `components.json`
- * (`@tabler/icons-react`). Pass it via the `icons` prop:
- *
- * ```tsx
- * import { tablerEditorIcons } from "@/components/editor/icons-tabler";
- *
- * <RichTextEditor editor={editor} icons={tablerEditorIcons} />;
- * ```
- */
-export const tablerEditorIcons: RichTextEditorIcons = {
+// Tabler Icons preset for BlockEditor ("iconLibrary": "tabler", @tabler/icons-react).
+export const DEFAULT_ICONS: RichTextEditorIcons = {
   alignCenterControlIcon: <IconAlignCenter {...iconProps} />,
   alignJustifyControlIcon: <IconAlignJustified {...iconProps} />,
   alignLeftControlIcon: <IconAlignLeft {...iconProps} />,

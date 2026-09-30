@@ -30,21 +30,10 @@ import {
 } from "@remixicon/react";
 
 import type { BlockEditorIcons } from "./icons";
-import { DEFAULT_LANGUAGE_ICONS } from "./icons";
+import { DEFAULT_LANGUAGE_ICONS } from "./language-icons";
 
-/**
- * Remix Icon preset for `BlockEditor`.
- *
- * Pairs with `"iconLibrary": "remixicon"` in `components.json`
- * (`@remixicon/react`). Pass it via the `icons` prop:
- *
- * ```tsx
- * import { remixBlockEditorIcons } from "@/components/block-editor/icons-remix";
- *
- * <BlockEditor editor={editor} icons={remixBlockEditorIcons} />;
- * ```
- */
-export const remixBlockEditorIcons: BlockEditorIcons = {
+// Remix Icons preset for BlockEditor ("iconLibrary": "remixicon", @remixicon/react).
+export const DEFAULT_ICONS: BlockEditorIcons = {
   alignCenterIcon: <RiAlignCenter />,
   alignLeftIcon: <RiAlignLeft />,
   alignRightIcon: <RiAlignRight />,

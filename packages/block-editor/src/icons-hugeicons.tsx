@@ -31,26 +31,14 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 
 import type { BlockEditorIcons } from "./icons";
-import { DEFAULT_LANGUAGE_ICONS } from "./icons";
+import { DEFAULT_LANGUAGE_ICONS } from "./language-icons";
 
 const H = ({ icon }: { icon: typeof BoldIcon }) => (
   <HugeiconsIcon icon={icon} strokeWidth={2} />
 );
 
-/**
- * HugeIcons preset for `BlockEditor`.
- *
- * Pairs with `"iconLibrary": "hugeicons"` in `components.json`
- * (`@hugeicons/react` + `@hugeicons/core-free-icons`). Pass it via the
- * `icons` prop:
- *
- * ```tsx
- * import { hugeiconsBlockEditorIcons } from "@/components/block-editor/icons-hugeicons";
- *
- * <BlockEditor editor={editor} icons={hugeiconsBlockEditorIcons} />;
- * ```
- */
-export const hugeiconsBlockEditorIcons: BlockEditorIcons = {
+// HugeIcons Icons preset for BlockEditor ("iconLibrary": "hugeicons", @hugeicons/react + @hugeicons/core-free-icons).
+export const DEFAULT_ICONS: BlockEditorIcons = {
   alignCenterIcon: <H icon={TextAlignCenterIcon} />,
   alignLeftIcon: <H icon={TextAlignLeftIcon} />,
   alignRightIcon: <H icon={TextAlignRightIcon} />,

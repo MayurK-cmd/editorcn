@@ -30,21 +30,10 @@ import {
 } from "@tabler/icons-react";
 
 import type { BlockEditorIcons } from "./icons";
-import { DEFAULT_LANGUAGE_ICONS } from "./icons";
+import { DEFAULT_LANGUAGE_ICONS } from "./language-icons";
 
-/**
- * Tabler Icons preset for `BlockEditor`.
- *
- * Pairs with `"iconLibrary": "tabler"` in `components.json`
- * (`@tabler/icons-react`). Pass it via the `icons` prop:
- *
- * ```tsx
- * import { tablerBlockEditorIcons } from "@/components/block-editor/icons-tabler";
- *
- * <BlockEditor editor={editor} icons={tablerBlockEditorIcons} />;
- * ```
- */
-export const tablerBlockEditorIcons: BlockEditorIcons = {
+// Tabler Icons preset for BlockEditor ("iconLibrary": "tabler", @tabler/icons-react).
+export const DEFAULT_ICONS: BlockEditorIcons = {
   alignCenterIcon: <IconAlignCenter />,
   alignLeftIcon: <IconAlignLeft />,
   alignRightIcon: <IconAlignRight />,

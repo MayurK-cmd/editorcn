@@ -30,23 +30,12 @@ import {
 } from "@phosphor-icons/react";
 
 import type { RichTextEditorIcons } from "./icons";
-import { DEFAULT_LANGUAGE_ICONS } from "./icons";
+import { DEFAULT_LANGUAGE_ICONS } from "./language-icons";
 
 const iconProps = { className: "rte-editor-icon" };
 
-/**
- * Phosphor Icons preset for `RichTextEditor`.
- *
- * Pairs with `"iconLibrary": "phosphor"` in `components.json`
- * (`@phosphor-icons/react`). Pass it via the `icons` prop:
- *
- * ```tsx
- * import { phosphorEditorIcons } from "@/components/editor/icons-phosphor";
- *
- * <RichTextEditor editor={editor} icons={phosphorEditorIcons} />;
- * ```
- */
-export const phosphorEditorIcons: RichTextEditorIcons = {
+// Phosphor Icons preset for BlockEditor ("iconLibrary": "phosphor", @phosphor-icons/react).
+export const DEFAULT_ICONS: RichTextEditorIcons = {
   alignCenterControlIcon: <TextAlignCenter {...iconProps} />,
   alignJustifyControlIcon: <TextAlignJustify {...iconProps} />,
   alignLeftControlIcon: <TextAlignLeft {...iconProps} />,

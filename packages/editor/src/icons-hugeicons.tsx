@@ -31,7 +31,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 
 import type { RichTextEditorIcons } from "./icons";
-import { DEFAULT_LANGUAGE_ICONS } from "./icons";
+import { DEFAULT_LANGUAGE_ICONS } from "./language-icons";
 
 const iconProps = {
   className: "rte-editor-icon",
@@ -42,20 +42,8 @@ const H = ({ icon }: { icon: typeof BoldIcon }) => (
   <HugeiconsIcon icon={icon} {...iconProps} />
 );
 
-/**
- * HugeIcons preset for `RichTextEditor`.
- *
- * Pairs with `"iconLibrary": "hugeicons"` in `components.json`
- * (`@hugeicons/react` + `@hugeicons/core-free-icons`). Pass it via the
- * `icons` prop:
- *
- * ```tsx
- * import { hugeiconsEditorIcons } from "@/components/editor/icons-hugeicons";
- *
- * <RichTextEditor editor={editor} icons={hugeiconsEditorIcons} />;
- * ```
- */
-export const hugeiconsEditorIcons: RichTextEditorIcons = {
+// HugeIcons Icons preset for BlockEditor ("iconLibrary": "hugeicons", @hugeicons/react + @hugeicons/core-free-icons).
+export const DEFAULT_ICONS: RichTextEditorIcons = {
   alignCenterControlIcon: <H icon={TextAlignCenterIcon} />,
   alignJustifyControlIcon: <H icon={TextAlignJustifyCenterIcon} />,
   alignLeftControlIcon: <H icon={TextAlignLeftIcon} />,

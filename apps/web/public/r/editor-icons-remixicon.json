@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "dependencies": [
+    "@remixicon/react@^4.9.0"
+  ],
+  "description": "Remix Icon variant of the Rich Text Editor icons. Install after the editor item; overwrites editor/icons.tsx.",
+  "files": [
+    {
+      "content": "import {\r\n  RiAlignCenter,\r\n  RiAlignJustify,\r\n  RiAlignLeft,\r\n  RiAlignRight,\r\n  RiArrowGoBackLine,\r\n  RiArrowGoForwardLine,\r\n  RiBold,\r\n  RiCodeBoxLine,\r\n  RiCodeLine,\r\n  RiFormatClear,\r\n  RiH1,\r\n  RiH2,\r\n  RiH3,\r\n  RiH4,\r\n  RiH5,\r\n  RiH6,\r\n  RiItalic,\r\n  RiLink,\r\n  RiLinkUnlink,\r\n  RiListOrdered,\r\n  RiListUnordered,\r\n  RiMarkPenLine,\r\n  RiQuoteText,\r\n  RiSeparator,\r\n  RiStrikethrough,\r\n  RiSubscript,\r\n  RiSuperscript,\r\n  RiUnderline,\r\n} from \"@remixicon/react\";\r\n\r\nimport type { RichTextEditorIcons } from \"./icons\";\r\nimport { DEFAULT_LANGUAGE_ICONS } from \"./language-icons\";\r\n\r\nconst iconProps = { className: \"rte-editor-icon\" };\r\n\r\n// Remix Icons preset for BlockEditor (\"iconLibrary\": \"remixicon\", @remixicon/react).\r\nexport const DEFAULT_ICONS: RichTextEditorIcons = {\r\n  alignCenterControlIcon: <RiAlignCenter {...iconProps} />,\r\n  alignJustifyControlIcon: <RiAlignJustify {...iconProps} />,\r\n  alignLeftControlIcon: <RiAlignLeft {...iconProps} />,\r\n  alignRightControlIcon: <RiAlignRight {...iconProps} />,\r\n  blockquoteControlIcon: <RiQuoteText {...iconProps} />,\r\n  boldControlIcon: <RiBold {...iconProps} />,\r\n  bulletListControlIcon: <RiListUnordered {...iconProps} />,\r\n  clearFormattingControlIcon: <RiFormatClear {...iconProps} />,\r\n  codeBlockControlIcon: <RiCodeBoxLine {...iconProps} />,\r\n  codeControlIcon: <RiCodeLine {...iconProps} />,\r\n  h1ControlIcon: <RiH1 {...iconProps} />,\r\n  h2ControlIcon: <RiH2 {...iconProps} />,\r\n  h3ControlIcon: <RiH3 {...iconProps} />,\r\n  h4ControlIcon: <RiH4 {...iconProps} />,\r\n  h5ControlIcon: <RiH5 {...iconProps} />,\r\n  h6ControlIcon: <RiH6 {...iconProps} />,\r\n  highlightControlIcon: <RiMarkPenLine {...iconProps} />,\r\n  hrControlIcon: <RiSeparator {...iconProps} />,\r\n  italicControlIcon: <RiItalic {...iconProps} />,\r\n  languageIcons: DEFAULT_LANGUAGE_ICONS,\r\n  linkControlIcon: <RiLink {...iconProps} />,\r\n  orderedListControlIcon: <RiListOrdered {...iconProps} />,\r\n  redoControlIcon: <RiArrowGoForwardLine {...iconProps} />,\r\n  strikeControlIcon: <RiStrikethrough {...iconProps} />,\r\n  subscriptControlIcon: <RiSubscript {...iconProps} />,\r\n  superscriptControlIcon: <RiSuperscript {...iconProps} />,\r\n  underlineControlIcon: <RiUnderline {...iconProps} />,\r\n  undoControlIcon: <RiArrowGoBackLine {...iconProps} />,\r\n  unlinkControlIcon: <RiLinkUnlink {...iconProps} />,\r\n};\r\n",
+      "path": "editor/icons.tsx",
+      "target": "@components/editor/icons.tsx",
+      "type": "registry:component"
+    }
+  ],
+  "name": "editor-icons-remixicon",
+  "title": "Rich Text Editor (Remix Icon)",
+  "type": "registry:component"
+}
