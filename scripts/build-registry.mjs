@@ -909,7 +909,9 @@ for (const [name, item] of writtenIconsets) {
   const { content } = firstFile;
 
   if (/from "\.\/icons"/.test(content)) {
-    throw new Error(`${name}: icons.tsx imports "./icons", which it overwrites.`);
+    throw new Error(
+      `${name}: icons.tsx imports "./icons", which it overwrites.`
+    );
   }
 
   if (dir === "block-editor" && !/export const HeadingIcon/.test(content)) {
@@ -919,7 +921,9 @@ for (const [name, item] of writtenIconsets) {
   }
 
   if (!/from "\.\/icon-types"/.test(content)) {
-    throw new Error(`${name}: icons.tsx should take its types from "./icon-types".`);
+    throw new Error(
+      `${name}: icons.tsx should take its types from "./icon-types".`
+    );
   }
 }
 
