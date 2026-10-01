@@ -1,7 +1,7 @@
 import type { Editor } from "@tiptap/react";
 import { createContext, useContext } from "react";
 
-import type { RichTextEditorIcons } from "./icons";
+import type { RichTextEditorIcons } from "./icon-types";
 import type { RichTextEditorLabels } from "./labels";
 import type { RichTextEditorVariant } from "./types";
 

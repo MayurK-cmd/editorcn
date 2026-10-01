@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "dependencies": [
+    "@tabler/icons-react@^3.48.0"
+  ],
+  "description": "Tabler Icons variant of the Block Editor icons. Install after the block-editor item; overwrites block-editor/icons.tsx.",
+  "files": [
+    {
+      "content": "import {\r\n  IconAlignCenter,\r\n  IconAlignLeft,\r\n  IconAlignRight,\r\n  IconBold,\r\n  IconBraces,\r\n  IconCheck,\r\n  IconChecklist,\r\n  IconChevronDown,\r\n  IconCode,\r\n  IconCopy,\r\n  IconFileText,\r\n  IconGripVertical,\r\n  IconH1,\r\n  IconH2,\r\n  IconH3,\r\n  IconHeading,\r\n  IconItalic,\r\n  IconLink,\r\n  IconList,\r\n  IconListNumbers,\r\n  IconMinus,\r\n  IconPhoto,\r\n  IconQuote,\r\n  IconSearch,\r\n  IconSourceCode,\r\n  IconStrikethrough,\r\n  IconTable,\r\n  IconTrash,\r\n  IconTypography,\r\n  IconUnderline,\r\n  IconUnlink,\r\n} from \"@tabler/icons-react\";\r\nimport React from \"react\";\r\n\r\nimport type { BlockEditorIcons } from \"./icon-types\";\r\nimport { DEFAULT_LANGUAGE_ICONS } from \"./language-icons\";\r\n\r\nconst headingIcons: Record<number, React.ComponentType> = {\r\n  1: IconH1,\r\n  2: IconH2,\r\n  3: IconH3,\r\n};\r\n\r\nexport const HeadingIcon = ({ level }: { level: number }) => {\r\n  const Icon = headingIcons[level] ?? IconHeading;\r\n  return <Icon />;\r\n};\r\n\r\n// Tabler Icons preset for BlockEditor (\"iconLibrary\": \"tabler\", @tabler/icons-react).\r\nexport const DEFAULT_ICONS: BlockEditorIcons = {\r\n  alignCenterIcon: <IconAlignCenter />,\r\n  alignLeftIcon: <IconAlignLeft />,\r\n  alignRightIcon: <IconAlignRight />,\r\n  boldIcon: <IconBold />,\r\n  checkIcon: <IconCheck />,\r\n  codeBlockLanguageIcon: <IconBraces />,\r\n  codeIcon: <IconCode />,\r\n  copyIcon: <IconCopy />,\r\n  deleteIcon: <IconTrash />,\r\n  dragHandleIcon: (\r\n    <IconGripVertical className=\"block-editor-drag-handle-icon\" />\r\n  ),\r\n  dropdownArrowIcon: <IconChevronDown size={12} />,\r\n  fallbackIcon: <IconFileText />,\r\n  italicIcon: <IconItalic />,\r\n  languageIcons: DEFAULT_LANGUAGE_ICONS,\r\n  linkIcon: <IconLink />,\r\n  searchIcon: <IconSearch size={14} />,\r\n  slashBlockquoteIcon: <IconQuote />,\r\n  slashBulletListIcon: <IconList />,\r\n  slashCodeBlockIcon: <IconSourceCode />,\r\n  slashDividerIcon: <IconMinus />,\r\n  slashHeadingIcon: <IconHeading />,\r\n  slashImageIcon: <IconPhoto />,\r\n  slashOrderedListIcon: <IconListNumbers />,\r\n  slashTableIcon: <IconTable />,\r\n  slashTaskListIcon: <IconChecklist />,\r\n  slashTextIcon: <IconTypography />,\r\n  strikethroughIcon: <IconStrikethrough />,\r\n  underlineIcon: <IconUnderline />,\r\n  unlinkIcon: <IconUnlink />,\r\n};\r\n",
+      "path": "block-editor/icons.tsx",
+      "target": "@components/block-editor/icons.tsx",
+      "type": "registry:component"
+    }
+  ],
+  "name": "block-editor-icons-tabler",
+  "title": "Block Editor (Tabler Icons)",
+  "type": "registry:component"
+}

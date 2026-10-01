@@ -2,7 +2,7 @@ import type { Editor } from "@tiptap/core";
 import { createContext, useContext } from "react";
 import type { ReactNode } from "react";
 
-import type { BlockEditorIcons } from "./icons";
+import type { BlockEditorIcons } from "./icon-types";
 import { DEFAULT_ICONS } from "./icons";
 import { DEFAULT_BLOCK_EDITOR_LABELS } from "./labels";
 import type { BlockEditorContextValue, BlockEditorLabels } from "./types";

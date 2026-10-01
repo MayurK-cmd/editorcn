@@ -280,6 +280,37 @@ const myItems: SlashCommandSuggestionItem[] = [
 ];
 ```
 
+### Icon library
+
+The default icons ship with **lucide-react**. If your `components.json` uses a different `iconLibrary`, install the matching icon set after the block editor — it overwrites `components/block-editor/icons.tsx` and installs only that library's package:
+
+| `iconLibrary`      | Install                                                                                   |
+| ------------------ | ----------------------------------------------------------------------------------------- |
+| `lucide` (default) | nothing — already included                                                                |
+| `phosphor`         | `npx shadcn@latest add "https://editorcn.vercel.app/r/block-editor-icons-phosphor.json"`  |
+| `tabler`           | `npx shadcn@latest add "https://editorcn.vercel.app/r/block-editor-icons-tabler.json"`    |
+| `hugeicons`        | `npx shadcn@latest add "https://editorcn.vercel.app/r/block-editor-icons-hugeicons.json"` |
+| `remixicon`        | `npx shadcn@latest add "https://editorcn.vercel.app/r/block-editor-icons-remixicon.json"` |
+
+Order matters — add the block editor first, then the icon set:
+
+```bash
+npx shadcn@latest add "https://editorcn.vercel.app/r/block-editor.json"
+npx shadcn@latest add "https://editorcn.vercel.app/r/block-editor-icons-phosphor.json"
+```
+
+Each set covers every slash menu, bubble menu, and drag handle icon, and reuses the shared language icons. Once installed you own `icons.tsx`, so you can still hand-edit it or override individual keys with the `icons` prop.
+
+Already installed with lucide? Migrate instead of reinstalling:
+
+```bash
+npx shadcn@latest migrate icons --from lucide --to phosphor "src/components/block-editor/**"
+```
+
+> **npm/pnpm installs**: the icon sets are registry items, so they apply to registry installs. With npm, override the `icons` prop yourself — the prop and all icon keys are unchanged.
+
+See the [Customization docs](/docs/customization) for icon sizing and per-key overrides.
+
 ### Language icons
 
 The code block language selector shows the language name (properly capitalized, e.g. **TypeScript**, **C++**, **JSON**) alongside its icon. Override per-language icons via the `languageIcons` key:

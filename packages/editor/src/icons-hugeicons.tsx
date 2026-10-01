@@ -1,37 +1,79 @@
 import {
-  Bold,
-  Code,
-  Heading1,
-  Heading2,
-  Heading3,
-  Heading4,
-  Heading5,
-  Heading6,
-  Highlighter,
-  Italic,
-  Link,
-  Link2Off,
-  List,
-  ListOrdered,
-  Minus,
-  Redo2,
-  RemoveFormatting,
-  SquareCode,
-  Strikethrough,
-  Subscript,
-  Superscript,
-  TextAlignCenter,
-  TextAlignEnd,
-  TextAlignJustify,
-  TextAlignStart,
-  TextQuote,
-  Underline,
-  Undo2,
-} from "lucide-react";
-import React from "react";
+  BoldIcon,
+  Heading01Icon,
+  Heading02Icon,
+  Heading03Icon,
+  Heading04Icon,
+  Heading05Icon,
+  Heading06Icon,
+  HighlighterIcon,
+  ItalicIcon,
+  LeftToRightBlockQuoteIcon,
+  LeftToRightListBulletIcon,
+  LeftToRightListNumberIcon,
+  Link01Icon,
+  MinusSignIcon,
+  RedoIcon,
+  SourceCodeIcon,
+  SourceCodeSquareIcon,
+  StrikethroughIcon,
+  SubscriptIcon,
+  SuperscriptIcon,
+  TextAlignCenterIcon,
+  TextAlignJustifyCenterIcon,
+  TextAlignLeftIcon,
+  TextAlignRightIcon,
+  TextClearIcon,
+  UnderlineIcon,
+  UndoIcon,
+  UnlinkIcon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 
 import type { RichTextEditorIcons } from "./icon-types";
 import { DEFAULT_LANGUAGE_ICONS } from "./language-icons";
+
+const iconProps = {
+  className: "rte-editor-icon",
+  strokeWidth: 2,
+} as const;
+
+const H = ({ icon }: { icon: typeof BoldIcon }) => (
+  <HugeiconsIcon icon={icon} {...iconProps} />
+);
+
+// HugeIcons Icons preset ("iconLibrary": "hugeicons", @hugeicons/react + @hugeicons/core-free-icons).
+export const DEFAULT_ICONS: RichTextEditorIcons = {
+  alignCenterControlIcon: <H icon={TextAlignCenterIcon} />,
+  alignJustifyControlIcon: <H icon={TextAlignJustifyCenterIcon} />,
+  alignLeftControlIcon: <H icon={TextAlignLeftIcon} />,
+  alignRightControlIcon: <H icon={TextAlignRightIcon} />,
+  blockquoteControlIcon: <H icon={LeftToRightBlockQuoteIcon} />,
+  boldControlIcon: <H icon={BoldIcon} />,
+  bulletListControlIcon: <H icon={LeftToRightListBulletIcon} />,
+  clearFormattingControlIcon: <H icon={TextClearIcon} />,
+  codeBlockControlIcon: <H icon={SourceCodeSquareIcon} />,
+  codeControlIcon: <H icon={SourceCodeIcon} />,
+  h1ControlIcon: <H icon={Heading01Icon} />,
+  h2ControlIcon: <H icon={Heading02Icon} />,
+  h3ControlIcon: <H icon={Heading03Icon} />,
+  h4ControlIcon: <H icon={Heading04Icon} />,
+  h5ControlIcon: <H icon={Heading05Icon} />,
+  h6ControlIcon: <H icon={Heading06Icon} />,
+  highlightControlIcon: <H icon={HighlighterIcon} />,
+  hrControlIcon: <H icon={MinusSignIcon} />,
+  italicControlIcon: <H icon={ItalicIcon} />,
+  languageIcons: DEFAULT_LANGUAGE_ICONS,
+  linkControlIcon: <H icon={Link01Icon} />,
+  orderedListControlIcon: <H icon={LeftToRightListNumberIcon} />,
+  redoControlIcon: <H icon={RedoIcon} />,
+  strikeControlIcon: <H icon={StrikethroughIcon} />,
+  subscriptControlIcon: <H icon={SubscriptIcon} />,
+  superscriptControlIcon: <H icon={SuperscriptIcon} />,
+  underlineControlIcon: <H icon={UnderlineIcon} />,
+  undoControlIcon: <H icon={UndoIcon} />,
+  unlinkControlIcon: <H icon={UnlinkIcon} />,
+};
 
 // ---------------------------------------------------------------------------
 // Embed toolbar icons (used by ResizableNodeView / EmbedToolbar)
@@ -128,37 +170,3 @@ export const DeleteEmbedIcon = () => (
     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
   </svg>
 );
-
-const iconProps = { className: "rte-editor-icon" };
-
-export const DEFAULT_ICONS: RichTextEditorIcons = {
-  alignCenterControlIcon: <TextAlignCenter {...iconProps} />,
-  alignJustifyControlIcon: <TextAlignJustify {...iconProps} />,
-  alignLeftControlIcon: <TextAlignStart {...iconProps} />,
-  alignRightControlIcon: <TextAlignEnd {...iconProps} />,
-  blockquoteControlIcon: <TextQuote {...iconProps} />,
-  boldControlIcon: <Bold {...iconProps} />,
-  bulletListControlIcon: <List {...iconProps} />,
-  clearFormattingControlIcon: <RemoveFormatting {...iconProps} />,
-  codeBlockControlIcon: <SquareCode {...iconProps} />,
-  codeControlIcon: <Code {...iconProps} />,
-  h1ControlIcon: <Heading1 {...iconProps} />,
-  h2ControlIcon: <Heading2 {...iconProps} />,
-  h3ControlIcon: <Heading3 {...iconProps} />,
-  h4ControlIcon: <Heading4 {...iconProps} />,
-  h5ControlIcon: <Heading5 {...iconProps} />,
-  h6ControlIcon: <Heading6 {...iconProps} />,
-  highlightControlIcon: <Highlighter {...iconProps} />,
-  hrControlIcon: <Minus {...iconProps} />,
-  italicControlIcon: <Italic {...iconProps} />,
-  languageIcons: DEFAULT_LANGUAGE_ICONS,
-  linkControlIcon: <Link {...iconProps} />,
-  orderedListControlIcon: <ListOrdered {...iconProps} />,
-  redoControlIcon: <Redo2 {...iconProps} />,
-  strikeControlIcon: <Strikethrough {...iconProps} />,
-  subscriptControlIcon: <Subscript {...iconProps} />,
-  superscriptControlIcon: <Superscript {...iconProps} />,
-  underlineControlIcon: <Underline {...iconProps} />,
-  undoControlIcon: <Undo2 {...iconProps} />,
-  unlinkControlIcon: <Link2Off {...iconProps} />,
-};

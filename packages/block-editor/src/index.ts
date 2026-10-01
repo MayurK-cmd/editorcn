@@ -10,5 +10,6 @@ export { CodeBlock } from "./extensions/code-block";
 export type { SlashCommandSuggestionItem, OnCommandSelect } from "./extensions";
 export type { BlockEditorProps, BlockEditorLabels } from "./types";
 export { DEFAULT_BLOCK_EDITOR_LABELS } from "./labels";
-export type { BlockEditorIcons } from "./icons";
-export { DEFAULT_ICONS, DEFAULT_LANGUAGE_ICONS } from "./icons";
+export type { BlockEditorIcons } from "./icon-types";
+export { DEFAULT_ICONS } from "./icons";
+export { DEFAULT_LANGUAGE_ICONS } from "./language-icons";

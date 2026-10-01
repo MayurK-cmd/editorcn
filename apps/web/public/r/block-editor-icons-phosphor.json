@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "dependencies": [
+    "@phosphor-icons/react@^2.1.10"
+  ],
+  "description": "Phosphor Icons variant of the Block Editor icons. Install after the block-editor item; overwrites block-editor/icons.tsx.",
+  "files": [
+    {
+      "content": "import {\r\n  BracketsCurlyIcon,\r\n  CaretDownIcon,\r\n  CheckIcon,\r\n  CodeBlockIcon,\r\n  CodeIcon,\r\n  CopyIcon,\r\n  DotsSixVerticalIcon,\r\n  FileTextIcon,\r\n  ImageIcon,\r\n  LinkIcon,\r\n  LinkSimpleBreakIcon,\r\n  ListBulletsIcon,\r\n  ListChecksIcon,\r\n  ListNumbersIcon,\r\n  MagnifyingGlassIcon,\r\n  MinusIcon,\r\n  QuotesIcon,\r\n  TableIcon,\r\n  TextAlignCenterIcon,\r\n  TextAlignLeftIcon,\r\n  TextAlignRightIcon,\r\n  TextBIcon,\r\n  TextH,\r\n  TextHIcon,\r\n  TextHOneIcon,\r\n  TextHThreeIcon,\r\n  TextHTwoIcon,\r\n  TextItalicIcon,\r\n  TextStrikethroughIcon,\r\n  TextTSlashIcon,\r\n  TextUnderlineIcon,\r\n  TrashIcon,\r\n} from \"@phosphor-icons/react\";\r\nimport React from \"react\";\r\n\r\nimport type { BlockEditorIcons } from \"./icon-types\";\r\nimport { DEFAULT_LANGUAGE_ICONS } from \"./language-icons\";\r\n\r\nconst headingIcons: Record<number, React.ComponentType> = {\r\n  1: TextHOneIcon,\r\n  2: TextHTwoIcon,\r\n  3: TextHThreeIcon,\r\n};\r\n\r\nexport const HeadingIcon = ({ level }: { level: number }) => {\r\n  const Icon = headingIcons[level] ?? TextH;\r\n  return <Icon />;\r\n};\r\n\r\n// Phosphor Icons preset (\"iconLibrary\": \"phosphor\", @phosphor-icons/react).\r\nexport const DEFAULT_ICONS: BlockEditorIcons = {\r\n  alignCenterIcon: <TextAlignCenterIcon />,\r\n  alignLeftIcon: <TextAlignLeftIcon />,\r\n  alignRightIcon: <TextAlignRightIcon />,\r\n  boldIcon: <TextBIcon />,\r\n  checkIcon: <CheckIcon />,\r\n  codeBlockLanguageIcon: <BracketsCurlyIcon/>,\r\n  codeIcon: <CodeIcon />,\r\n  copyIcon: <CopyIcon />,\r\n  deleteIcon: <TrashIcon />,\r\n  dragHandleIcon: <DotsSixVerticalIcon className=\"block-editor-drag-handle-icon\" />,\r\n  dropdownArrowIcon: <CaretDownIcon size={12} />,\r\n  fallbackIcon: <FileTextIcon />,\r\n  italicIcon: <TextItalicIcon />,\r\n  languageIcons: DEFAULT_LANGUAGE_ICONS,\r\n  linkIcon: <LinkIcon />,\r\n  searchIcon: <MagnifyingGlassIcon size={14} />,\r\n  slashBlockquoteIcon: <QuotesIcon />,\r\n  slashBulletListIcon: <ListBulletsIcon />,\r\n  slashCodeBlockIcon: <CodeBlockIcon />,\r\n  slashDividerIcon: <MinusIcon />,\r\n  slashHeadingIcon: <TextHIcon />,\r\n  slashImageIcon: <ImageIcon />,\r\n  slashOrderedListIcon: <ListNumbersIcon />,\r\n  slashTableIcon: <TableIcon />,\r\n  slashTaskListIcon: <ListChecksIcon />,\r\n  slashTextIcon: <TextTSlashIcon />,\r\n  strikethroughIcon: <TextStrikethroughIcon />,\r\n  underlineIcon: <TextUnderlineIcon />,\r\n  unlinkIcon: <LinkSimpleBreakIcon />,\r\n};\r\n",
+      "path": "block-editor/icons.tsx",
+      "target": "@components/block-editor/icons.tsx",
+      "type": "registry:component"
+    }
+  ],
+  "name": "block-editor-icons-phosphor",
+  "title": "Block Editor (Phosphor Icons)",
+  "type": "registry:component"
+}

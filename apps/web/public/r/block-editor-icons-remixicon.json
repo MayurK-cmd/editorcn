@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "dependencies": [
+    "@remixicon/react@^4.9.0"
+  ],
+  "description": "Remix Icon variant of the Block Editor icons. Install after the block-editor item; overwrites block-editor/icons.tsx.",
+  "files": [
+    {
+      "content": "import {\r\n  RiAlignCenter,\r\n  RiAlignLeft,\r\n  RiAlignRight,\r\n  RiArrowDownSLine,\r\n  RiBold,\r\n  RiBracesLine,\r\n  RiCheckLine,\r\n  RiCodeBoxLine,\r\n  RiCodeLine,\r\n  RiDeleteBinLine,\r\n  RiDraggable,\r\n  RiFileCopyLine,\r\n  RiFileTextLine,\r\n  RiH1,\r\n  RiH2,\r\n  RiH3,\r\n  RiHeading,\r\n  RiImageLine,\r\n  RiItalic,\r\n  RiLink,\r\n  RiLinkUnlink,\r\n  RiListCheck,\r\n  RiListOrdered,\r\n  RiListUnordered,\r\n  RiQuoteText,\r\n  RiSearchLine,\r\n  RiSeparator,\r\n  RiStrikethrough,\r\n  RiTableLine,\r\n  RiText,\r\n  RiUnderline,\r\n} from \"@remixicon/react\";\r\nimport React from \"react\";\r\n\r\nimport type { BlockEditorIcons } from \"./icon-types\";\r\nimport { DEFAULT_LANGUAGE_ICONS } from \"./language-icons\";\r\n\r\nconst headingIcons: Record<number, React.ComponentType> = {\r\n  1: RiH1,\r\n  2: RiH2,\r\n  3: RiH3,\r\n};\r\n\r\nexport const HeadingIcon = ({ level }: { level: number }) => {\r\n  const Icon = headingIcons[level] ?? RiHeading;\r\n  return <Icon />;\r\n};\r\n\r\n// Remix Icons preset (\"iconLibrary\": \"remixicon\", @remixicon/react).\r\nexport const DEFAULT_ICONS: BlockEditorIcons = {\r\n  alignCenterIcon: <RiAlignCenter />,\r\n  alignLeftIcon: <RiAlignLeft />,\r\n  alignRightIcon: <RiAlignRight />,\r\n  boldIcon: <RiBold />,\r\n  checkIcon: <RiCheckLine />,\r\n  codeBlockLanguageIcon: <RiBracesLine />,\r\n  codeIcon: <RiCodeLine />,\r\n  copyIcon: <RiFileCopyLine />,\r\n  deleteIcon: <RiDeleteBinLine />,\r\n  dragHandleIcon: <RiDraggable className=\"block-editor-drag-handle-icon\" />,\r\n  dropdownArrowIcon: <RiArrowDownSLine size={12} />,\r\n  fallbackIcon: <RiFileTextLine />,\r\n  italicIcon: <RiItalic />,\r\n  languageIcons: DEFAULT_LANGUAGE_ICONS,\r\n  linkIcon: <RiLink />,\r\n  searchIcon: <RiSearchLine size={14} />,\r\n  slashBlockquoteIcon: <RiQuoteText />,\r\n  slashBulletListIcon: <RiListUnordered />,\r\n  slashCodeBlockIcon: <RiCodeBoxLine />,\r\n  slashDividerIcon: <RiSeparator />,\r\n  slashHeadingIcon: <RiHeading />,\r\n  slashImageIcon: <RiImageLine />,\r\n  slashOrderedListIcon: <RiListOrdered />,\r\n  slashTableIcon: <RiTableLine />,\r\n  slashTaskListIcon: <RiListCheck />,\r\n  slashTextIcon: <RiText />,\r\n  strikethroughIcon: <RiStrikethrough />,\r\n  underlineIcon: <RiUnderline />,\r\n  unlinkIcon: <RiLinkUnlink />,\r\n};\r\n",
+      "path": "block-editor/icons.tsx",
+      "target": "@components/block-editor/icons.tsx",
+      "type": "registry:component"
+    }
+  ],
+  "name": "block-editor-icons-remixicon",
+  "title": "Block Editor (Remix Icon)",
+  "type": "registry:component"
+}

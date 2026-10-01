@@ -51,7 +51,19 @@ const editorFiles = [
     "rte-controls-group.tsx"
   ),
   entry("editor/labels.ts", "registry:component", "editor", "labels.ts"),
+  entry(
+    "editor/icon-types.ts",
+    "registry:component",
+    "editor",
+    "icon-types.ts"
+  ),
   entry("editor/icons.tsx", "registry:component", "editor", "icons.tsx"),
+  entry(
+    "editor/language-icons.tsx",
+    "registry:component",
+    "editor",
+    "language-icons.tsx"
+  ),
   entry("editor/types.ts", "registry:component", "editor", "types.ts"),
   entry("editor/style.css", "registry:style", "editor", "style.css"),
   entry(
@@ -295,10 +307,22 @@ const blockEditorFiles = [
     "context.tsx"
   ),
   entry(
+    "block-editor/icon-types.ts",
+    "registry:component",
+    "block-editor",
+    "icon-types.ts"
+  ),
+  entry(
     "block-editor/icons.tsx",
     "registry:component",
     "block-editor",
     "icons.tsx"
+  ),
+  entry(
+    "block-editor/language-icons.tsx",
+    "registry:component",
+    "block-editor",
+    "language-icons.tsx"
   ),
   entry(
     "block-editor/labels.ts",
@@ -484,6 +508,61 @@ const staticRendererFiles = [
     "style.css"
   ),
 ];
+
+const iconSetEntry = (dir, pkg, set) => {
+  const path = `${dir}/icons.tsx`;
+  const src = `icons-${set === "remixicon" ? "remix" : set}.tsx`;
+  const content = read(pkg, src);
+  assertNoSelfImport(dir, set, content);
+  return {
+    content,
+    path,
+    target: `@components/${path}`,
+    type: "registry:component",
+  };
+};
+
+const assertNoSelfImport = (dir, set, content) => {
+  const selfImport = new RegExp(`from "\\./icons"`);
+  if (selfImport.test(content)) {
+    throw new Error(
+      `icons-${set}.tsx (${dir}) imports from "./icons", which it overwrites. Import the icon types from "./icon-types" instead.`
+    );
+  }
+};
+
+const iconSetDeps = {
+  hugeicons: ["@hugeicons/react@^1.1.10", "@hugeicons/core-free-icons@^4.3.5"],
+  phosphor: ["@phosphor-icons/react@^2.1.10"],
+  remixicon: ["@remixicon/react@^4.9.0"],
+  tabler: ["@tabler/icons-react@^3.48.0"],
+};
+
+const iconSetTitles = {
+  hugeicons: "HugeIcons",
+  phosphor: "Phosphor Icons",
+  remixicon: "Remix Icon",
+  tabler: "Tabler Icons",
+};
+
+const iconSetItems = ["phosphor", "tabler", "hugeicons", "remixicon"].flatMap(
+  (set) => [
+    {
+      deps: iconSetDeps[set],
+      description: `${iconSetTitles[set]} variant of the Rich Text Editor icons. Install after the editor item; overwrites editor/icons.tsx.`,
+      files: [iconSetEntry("editor", "editor", set)],
+      name: `editor-icons-${set}`,
+      title: `Rich Text Editor (${iconSetTitles[set]})`,
+    },
+    {
+      deps: iconSetDeps[set],
+      description: `${iconSetTitles[set]} variant of the Block Editor icons. Install after the block-editor item; overwrites block-editor/icons.tsx.`,
+      files: [iconSetEntry("block-editor", "block-editor", set)],
+      name: `block-editor-icons-${set}`,
+      title: `Block Editor (${iconSetTitles[set]})`,
+    },
+  ]
+);
 
 const extensionCoreFiles = [
   "index.ts",
@@ -810,6 +889,44 @@ for (const item of extensionsItems) {
   );
 }
 
+const writtenIconsets = new Map();
+
+for (const item of iconSetItems) {
+  writeFileSync(
+    resolve(outDir, `${item.name}.json`),
+    JSON.stringify(
+      buildItem(item.name, item.title, item.description, item.files, item.deps),
+      null,
+      2
+    )
+  );
+  writtenIconsets.set(item.name, item);
+}
+
+for (const [name, item] of writtenIconsets) {
+  const dir = name.startsWith("editor-icons-") ? "editor" : "block-editor";
+  const [firstFile] = item.files;
+  const { content } = firstFile;
+
+  if (/from "\.\/icons"/.test(content)) {
+    throw new Error(
+      `${name}: icons.tsx imports "./icons", which it overwrites.`
+    );
+  }
+
+  if (dir === "block-editor" && !/export const HeadingIcon/.test(content)) {
+    throw new Error(
+      `${name}: icons.tsx must export HeadingIcon; bubble-menu/node-selector.tsx imports it.`
+    );
+  }
+
+  if (!/from "\.\/icon-types"/.test(content)) {
+    throw new Error(
+      `${name}: icons.tsx should take its types from "./icon-types".`
+    );
+  }
+}
+
 const catalog = {
   $schema: "https://ui.shadcn.com/schema/registry.json",
   homepage: "https://editorcn.vercel.app",
@@ -844,6 +961,15 @@ const catalog = {
         item.files
       )
     ),
+    ...iconSetItems.map((item) =>
+      catalogItem(
+        item.name,
+        item.title,
+        item.description,
+        item.deps,
+        item.files
+      )
+    ),
   ],
   name: "editorcn",
 };
@@ -858,5 +984,8 @@ console.log("  apps/web/public/r/editor.json");
 console.log("  apps/web/public/r/block-editor.json");
 console.log("  apps/web/public/r/static-renderer.json");
 for (const item of extensionsItems) {
+  console.log(`  apps/web/public/r/${item.name}.json`);
+}
+for (const item of iconSetItems) {
   console.log(`  apps/web/public/r/${item.name}.json`);
 }

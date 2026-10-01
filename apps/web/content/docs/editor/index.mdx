@@ -791,6 +791,37 @@ import { RichTextEditor, DEFAULT_ICONS } from "@/components/editor";
 </RichTextEditor>;
 ```
 
+### Icon library
+
+The default icons ship with **lucide-react**. If your `components.json` uses a different `iconLibrary`, install the matching icon set after the editor — it overwrites `components/editor/icons.tsx` and installs only that library's package:
+
+| `iconLibrary`      | Install                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------- |
+| `lucide` (default) | nothing — already included                                                          |
+| `phosphor`         | `npx shadcn@latest add "https://editorcn.vercel.app/r/editor-icons-phosphor.json"`  |
+| `tabler`           | `npx shadcn@latest add "https://editorcn.vercel.app/r/editor-icons-tabler.json"`    |
+| `hugeicons`        | `npx shadcn@latest add "https://editorcn.vercel.app/r/editor-icons-hugeicons.json"` |
+| `remixicon`        | `npx shadcn@latest add "https://editorcn.vercel.app/r/editor-icons-remixicon.json"` |
+
+Order matters — add the editor first, then the icon set:
+
+```bash
+npx shadcn@latest add "https://editorcn.vercel.app/r/editor.json"
+npx shadcn@latest add "https://editorcn.vercel.app/r/editor-icons-phosphor.json"
+```
+
+Each set covers all 28 toolbar icons and reuses the shared language icons, so switching libraries swaps the whole toolbar consistently. Because `icons.tsx` is yours after install, you can still hand-edit or override individual keys with the `icons` prop on top.
+
+Already installed with lucide? Migrate instead of reinstalling:
+
+```bash
+npx shadcn@latest migrate icons --from lucide --to phosphor "src/components/editor/**"
+```
+
+> **npm/pnpm installs**: the icon sets are registry items, so they apply to registry installs. With npm, override the `icons` prop yourself — the `icons` prop and all 28 icon keys are unchanged.
+
+See the [Customization docs](/docs/customization) for icon sizing and per-key overrides.
+
 ### Language icons
 
 The code block language selector shows per-language icons (e.g. a JavaScript icon for JS, a Python icon for Python). These are provided via the `languageIcons` key in the icons object:

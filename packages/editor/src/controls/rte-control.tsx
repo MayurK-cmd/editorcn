@@ -2,7 +2,7 @@ import type { ChainedCommands, Editor } from "@tiptap/core";
 import { useEditorState } from "@tiptap/react";
 import React from "react";
 
-import type { RichTextEditorIcons } from "../icons";
+import type { RichTextEditorIcons } from "../icon-types";
 import type { RichTextEditorLabels } from "../labels";
 import { useRichTextEditorContext } from "../rte-context";
 import type { RichTextEditorControlProps } from "../types";
