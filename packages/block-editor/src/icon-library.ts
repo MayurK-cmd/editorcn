@@ -6,7 +6,7 @@ export type BlockEditorIconLibrary =
   | "phosphor"
   | "remixicon";
 
-/** npm packages required per icon library (mirrors the shadcn CLI). */
+// npm packages required per icon library
 export const BLOCK_EDITOR_ICON_LIBRARY_PACKAGES: Record<
   BlockEditorIconLibrary,
   string[]

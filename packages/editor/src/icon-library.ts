@@ -6,7 +6,7 @@ export type EditorIconLibrary =
   | "phosphor"
   | "remixicon";
 
-/** npm packages required per icon library (mirrors the shadcn CLI). */
+// npm packages required per icon library (mirrors the shadcn CLI)
 export const EDITOR_ICON_LIBRARY_PACKAGES: Record<EditorIconLibrary, string[]> =
   {
     hugeicons: ["@hugeicons/react", "@hugeicons/core-free-icons"],

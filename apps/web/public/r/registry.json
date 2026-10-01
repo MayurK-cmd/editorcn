@@ -61,6 +61,10 @@
           "type": "registry:component"
         },
         {
+          "path": "editor/icon-types.ts",
+          "type": "registry:component"
+        },
+        {
           "path": "editor/icons.tsx",
           "type": "registry:component"
         },
@@ -281,6 +285,10 @@
         },
         {
           "path": "block-editor/context.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "block-editor/icon-types.ts",
           "type": "registry:component"
         },
         {

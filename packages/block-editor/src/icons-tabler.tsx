@@ -11,6 +11,9 @@ import {
   IconCopy,
   IconFileText,
   IconGripVertical,
+  IconH1,
+  IconH2,
+  IconH3,
   IconHeading,
   IconItalic,
   IconLink,
@@ -28,9 +31,21 @@ import {
   IconUnderline,
   IconUnlink,
 } from "@tabler/icons-react";
+import React from "react";
 
-import type { BlockEditorIcons } from "./icons";
+import type { BlockEditorIcons } from "./icon-types";
 import { DEFAULT_LANGUAGE_ICONS } from "./language-icons";
+
+const headingIcons: Record<number, React.ComponentType> = {
+  1: IconH1,
+  2: IconH2,
+  3: IconH3,
+};
+
+export const HeadingIcon = ({ level }: { level: number }) => {
+  const Icon = headingIcons[level] ?? IconHeading;
+  return <Icon />;
+};
 
 // Tabler Icons preset for BlockEditor ("iconLibrary": "tabler", @tabler/icons-react).
 export const DEFAULT_ICONS: BlockEditorIcons = {

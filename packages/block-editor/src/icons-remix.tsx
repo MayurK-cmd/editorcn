@@ -12,6 +12,9 @@ import {
   RiDraggable,
   RiFileCopyLine,
   RiFileTextLine,
+  RiH1,
+  RiH2,
+  RiH3,
   RiHeading,
   RiImageLine,
   RiItalic,
@@ -28,11 +31,23 @@ import {
   RiText,
   RiUnderline,
 } from "@remixicon/react";
+import React from "react";
 
-import type { BlockEditorIcons } from "./icons";
+import type { BlockEditorIcons } from "./icon-types";
 import { DEFAULT_LANGUAGE_ICONS } from "./language-icons";
 
-// Remix Icons preset for BlockEditor ("iconLibrary": "remixicon", @remixicon/react).
+const headingIcons: Record<number, React.ComponentType> = {
+  1: RiH1,
+  2: RiH2,
+  3: RiH3,
+};
+
+export const HeadingIcon = ({ level }: { level: number }) => {
+  const Icon = headingIcons[level] ?? RiHeading;
+  return <Icon />;
+};
+
+// Remix Icons preset ("iconLibrary": "remixicon", @remixicon/react).
 export const DEFAULT_ICONS: BlockEditorIcons = {
   alignCenterIcon: <RiAlignCenter />,
   alignLeftIcon: <RiAlignLeft />,

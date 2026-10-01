@@ -7,6 +7,8 @@ import {
   Drag01Icon,
   FileTextIcon,
   Heading01Icon,
+  Heading02Icon,
+  Heading03Icon,
   Image01Icon,
   ItalicIcon,
   LeftToRightBlockQuoteIcon,
@@ -30,14 +32,25 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 
-import type { BlockEditorIcons } from "./icons";
+import type { BlockEditorIcons } from "./icon-types";
 import { DEFAULT_LANGUAGE_ICONS } from "./language-icons";
 
 const H = ({ icon }: { icon: typeof BoldIcon }) => (
   <HugeiconsIcon icon={icon} strokeWidth={2} />
 );
 
-// HugeIcons Icons preset for BlockEditor ("iconLibrary": "hugeicons", @hugeicons/react + @hugeicons/core-free-icons).
+const headingIcons: Record<number, typeof BoldIcon> = {
+  1: Heading01Icon,
+  2: Heading02Icon,
+  3: Heading03Icon,
+};
+
+export const HeadingIcon = ({ level }: { level: number }) => {
+  const icon = headingIcons[level] ?? Heading01Icon;
+  return <H icon={icon} />;
+};
+
+// HugeIcons Icons preset ("iconLibrary": "hugeicons", @hugeicons/react + @hugeicons/core-free-icons).
 export const DEFAULT_ICONS: BlockEditorIcons = {
   alignCenterIcon: <H icon={TextAlignCenterIcon} />,
   alignLeftIcon: <H icon={TextAlignLeftIcon} />,

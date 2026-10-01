@@ -51,6 +51,12 @@ const editorFiles = [
     "rte-controls-group.tsx"
   ),
   entry("editor/labels.ts", "registry:component", "editor", "labels.ts"),
+  entry(
+    "editor/icon-types.ts",
+    "registry:component",
+    "editor",
+    "icon-types.ts"
+  ),
   entry("editor/icons.tsx", "registry:component", "editor", "icons.tsx"),
   entry(
     "editor/language-icons.tsx",
@@ -301,6 +307,12 @@ const blockEditorFiles = [
     "context.tsx"
   ),
   entry(
+    "block-editor/icon-types.ts",
+    "registry:component",
+    "block-editor",
+    "icon-types.ts"
+  ),
+  entry(
     "block-editor/icons.tsx",
     "registry:component",
     "block-editor",
@@ -500,12 +512,23 @@ const staticRendererFiles = [
 const iconSetEntry = (dir, pkg, set) => {
   const path = `${dir}/icons.tsx`;
   const src = `icons-${set === "remixicon" ? "remix" : set}.tsx`;
+  const content = read(pkg, src);
+  assertNoSelfImport(dir, set, content);
   return {
-    content: read(pkg, src),
+    content,
     path,
     target: `@components/${path}`,
     type: "registry:component",
   };
+};
+
+const assertNoSelfImport = (dir, set, content) => {
+  const selfImport = new RegExp(`from "\\./icons"`);
+  if (selfImport.test(content)) {
+    throw new Error(
+      `icons-${set}.tsx (${dir}) imports from "./icons", which it overwrites. Import the icon types from "./icon-types" instead.`
+    );
+  }
 };
 
 const iconSetDeps = {
@@ -866,6 +889,8 @@ for (const item of extensionsItems) {
   );
 }
 
+const writtenIconsets = new Map();
+
 for (const item of iconSetItems) {
   writeFileSync(
     resolve(outDir, `${item.name}.json`),
@@ -875,6 +900,27 @@ for (const item of iconSetItems) {
       2
     )
   );
+  writtenIconsets.set(item.name, item);
+}
+
+for (const [name, item] of writtenIconsets) {
+  const dir = name.startsWith("editor-icons-") ? "editor" : "block-editor";
+  const [firstFile] = item.files;
+  const { content } = firstFile;
+
+  if (/from "\.\/icons"/.test(content)) {
+    throw new Error(`${name}: icons.tsx imports "./icons", which it overwrites.`);
+  }
+
+  if (dir === "block-editor" && !/export const HeadingIcon/.test(content)) {
+    throw new Error(
+      `${name}: icons.tsx must export HeadingIcon; bubble-menu/node-selector.tsx imports it.`
+    );
+  }
+
+  if (!/from "\.\/icon-types"/.test(content)) {
+    throw new Error(`${name}: icons.tsx should take its types from "./icon-types".`);
+  }
 }
 
 const catalog = {

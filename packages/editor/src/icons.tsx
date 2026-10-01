@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import React from "react";
 
+import type { RichTextEditorIcons } from "./icon-types";
 import { DEFAULT_LANGUAGE_ICONS } from "./language-icons";
 
 // ---------------------------------------------------------------------------
@@ -127,38 +128,6 @@ export const DeleteEmbedIcon = () => (
     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
   </svg>
 );
-
-export interface RichTextEditorIcons {
-  boldControlIcon: React.ReactNode;
-  italicControlIcon: React.ReactNode;
-  underlineControlIcon: React.ReactNode;
-  strikeControlIcon: React.ReactNode;
-  clearFormattingControlIcon: React.ReactNode;
-  codeControlIcon: React.ReactNode;
-  codeBlockControlIcon: React.ReactNode;
-  h1ControlIcon: React.ReactNode;
-  h2ControlIcon: React.ReactNode;
-  h3ControlIcon: React.ReactNode;
-  h4ControlIcon: React.ReactNode;
-  h5ControlIcon: React.ReactNode;
-  h6ControlIcon: React.ReactNode;
-  bulletListControlIcon: React.ReactNode;
-  orderedListControlIcon: React.ReactNode;
-  blockquoteControlIcon: React.ReactNode;
-  hrControlIcon: React.ReactNode;
-  linkControlIcon: React.ReactNode;
-  unlinkControlIcon: React.ReactNode;
-  undoControlIcon: React.ReactNode;
-  redoControlIcon: React.ReactNode;
-  alignLeftControlIcon: React.ReactNode;
-  alignCenterControlIcon: React.ReactNode;
-  alignRightControlIcon: React.ReactNode;
-  alignJustifyControlIcon: React.ReactNode;
-  highlightControlIcon: React.ReactNode;
-  subscriptControlIcon: React.ReactNode;
-  superscriptControlIcon: React.ReactNode;
-  languageIcons: Record<string, React.ReactNode>;
-}
 
 const iconProps = { className: "rte-editor-icon" };
 
