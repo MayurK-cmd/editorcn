@@ -442,10 +442,52 @@ button.rte-control-button:active {
     scrollbar-width: none;
     -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
-    mask-image: linear-gradient(to right, black 95%, transparent 100%);
+    --rte-toolbar-fade-end: 1.5rem;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black var(--rte-toolbar-fade-start),
+      black calc(100% - var(--rte-toolbar-fade-end)),
+      transparent
+    );
   }
   .rte-toolbar::-webkit-scrollbar {
     display: none;
+  }
+  @supports (animation-timeline: scroll()) {
+    .rte-toolbar {
+      --rte-toolbar-fade-end: 0px;
+      animation: rte-toolbar-fade linear both;
+      animation-timeline: scroll(self inline);
+    }
+  }
+}
+
+@property --rte-toolbar-fade-start {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --rte-toolbar-fade-end {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@keyframes rte-toolbar-fade {
+  from {
+    --rte-toolbar-fade-start: 0px;
+    --rte-toolbar-fade-end: 1.5rem;
+  }
+  10%,
+  90% {
+    --rte-toolbar-fade-start: 1.5rem;
+    --rte-toolbar-fade-end: 1.5rem;
+  }
+  to {
+    --rte-toolbar-fade-start: 1.5rem;
+    --rte-toolbar-fade-end: 0px;
   }
 }
 

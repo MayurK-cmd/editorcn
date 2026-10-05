@@ -252,6 +252,10 @@
           "type": "registry:component"
         },
         {
+          "path": "block-editor/bottom-bar.tsx",
+          "type": "registry:component"
+        },
+        {
           "path": "block-editor/bubble-menu/index.tsx",
           "type": "registry:component"
         },

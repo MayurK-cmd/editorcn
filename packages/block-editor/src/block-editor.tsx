@@ -4,6 +4,7 @@ import { EditorContent } from "@tiptap/react";
 import { Plus } from "lucide-react";
 import { useCallback, useRef } from "react";
 
+import { BottomBar } from "./bottom-bar";
 import { BubbleMenu } from "./bubble-menu";
 import { BlockEditorProvider, useBlockEditorContext } from "./context";
 import { cn } from "./lib/utils";
@@ -65,6 +66,7 @@ const BlockEditorContent = () => {
       {editor && editor.isEditable && <BlockEditorDragHandle />}
       {editor && editor.isEditable && <BubbleMenu editor={editor} />}
       <EditorContent editor={editor} className="block-editor-content" />
+      {editor && editor.isEditable && <BottomBar editor={editor} />}
     </div>
   );
 };
@@ -84,6 +86,7 @@ const BlockEditorRoot = ({
 );
 
 export const BlockEditor = Object.assign(BlockEditorRoot, {
+  BottomBar,
   BubbleMenu,
   Content: BlockEditorContent,
 });

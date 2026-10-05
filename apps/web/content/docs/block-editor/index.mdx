@@ -167,7 +167,7 @@ By default all icons come from **lucide-react**, which inherits your theme's col
 
 ## BlockEditor.Content
 
-Renders the editor content area with the drag handle and block actions. Use this when providing custom children to the root.
+Renders the editor content area with the drag handle and block actions, plus the [bottom bar](#blockeditorbottombar) on touch devices. Use this when providing custom children to the root.
 
 ```tsx
 <BlockEditor editor={editor}>
@@ -185,6 +185,28 @@ A standalone bubble menu component that can be used outside the BlockEditor root
   <BlockEditor.BubbleMenu />
 </BlockEditor>
 ```
+
+## BlockEditor.BottomBar
+
+A formatting bar that is pinned to the bottom of the editor and shown only on touch devices (`(hover: none) and (pointer: coarse)`). `BlockEditor.Content` already renders it, so you only need it when composing your own layout.
+
+```tsx
+<BlockEditor editor={editor}>
+  <EditorContent editor={editor} />
+  <BlockEditor.BottomBar editor={editor} />
+</BlockEditor>
+```
+
+| Prop     | Type     | Default | Description          |
+| -------- | -------- | ------- | -------------------- |
+| `editor` | `Editor` | —       | The Tiptap instance. |
+
+It contains:
+
+- **Add block** — Opens the slash command menu. If the current block has text, a new paragraph is inserted below it first.
+- **Node type selector**, **inline formatting**, **text color**, **link**, and **text alignment** (when `@tiptap/extension-text-align` is registered) — The same controls as the bubble menu.
+
+The bar scrolls horizontally with edge fades when the controls overflow, opens its dropdowns upward, and stays above the on-screen keyboard using the `visualViewport` API.
 
 ## Features
 
@@ -480,6 +502,10 @@ Click the drag handle (grip icon) on the left side of any block to access a drop
 ### Drag handle
 
 Drag blocks to reorder them using the grip icon on the left. The drag handle uses `@tiptap/extension-drag-handle-react`.
+
+### Touch devices
+
+On touch devices the drag handle, add-block button, and bubble menu are hidden, and the content's left gutter is removed. Formatting and block insertion move to the [bottom bar](#blockeditorbottombar).
 
 ## Extensions
 
