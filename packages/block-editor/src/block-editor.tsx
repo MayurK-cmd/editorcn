@@ -22,7 +22,7 @@ const BlockEditorDragHandle = () => {
     ({ node, pos }: { node: Node | null; pos: number }) => {
       dragNodeRef.current = node ? { node, pos } : null;
     },
-    [],
+    []
   );
 
   const handleAdd = useCallback(() => {
