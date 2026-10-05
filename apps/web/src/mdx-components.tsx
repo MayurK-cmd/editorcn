@@ -40,6 +40,7 @@ import {
   FontFamilySelectCard,
   FontSizeCard,
 } from "@/components/customization/templates-demos";
+import { TemplateShowcase } from "@/components/template-showcase";
 import {
   Accordion,
   AccordionContent,
@@ -168,6 +169,7 @@ export const mdxComponents = {
       {...props}
     />
   ),
+  TemplateShowcase,
   a: ({ className, children, ...props }: React.ComponentProps<"a">) => (
     <a
       className={cn("font-medium underline underline-offset-4", className)}

@@ -16,6 +16,7 @@ export const ROUTES = {
   DOCS_REGISTRY: "/docs/registry",
   DOCS_STATIC_RENDERER: "/docs/static-renderer",
   DOCS_STYLING: "/docs/styling",
+  DOCS_TEMPLATES: "/docs/templates",
   HOME: "/",
   LLMS: "/llms.txt",
   LLMS_FULL: "/llms-full.txt",
@@ -25,5 +26,4 @@ export const ROUTES = {
   REGISTRY: "/r/registry.json",
   RSS: "/rss.xml",
   SPONSOR: "/sponsor",
-  TEMPLATES: "/templates",
 } as const;

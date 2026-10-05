@@ -1,0 +1,87 @@
+---
+title: Toolbar Presets
+description: Prebuilt toolbar configurations with custom controls baked in.
+---
+
+Prebuilt editor configurations that come with custom controls already integrated. Each template is a complete `@editorcn/editor` setup with specific controls tailored to a use case — just install and go.
+
+Install the base editor and the controls you need, or install everything at once.
+
+<div className="rounded-lg border border-border p-6 mb-8">
+
+### Document Editor
+
+<div className="text-sm text-muted-foreground mb-4">
+  Font Family Select · Font Size · Highlight Color Popover
+</div>
+
+A rich text editor focused on document styling — choose fonts, set text size, and highlight important content.
+
+**Install the editor:**
+
+```bash
+npx shadcn@latest add @editorcn/editor
+```
+
+**Then install the controls:**
+
+```bash
+npx shadcn@latest add "https://editorcn.vercel.app/r/custom-controls/font-family-select" "https://editorcn.vercel.app/r/custom-controls/font-size" "https://editorcn.vercel.app/r/custom-controls/highlight-color-popover"
+```
+
+<DocumentEditorCard />
+
+</div>
+
+<div className="rounded-lg border border-border p-6 mb-8">
+
+### Enhanced Editor
+
+<div className="text-sm text-muted-foreground mb-4">
+  Heading Select · Insert Link Dialog · Emoji Menu
+</div>
+
+A content-creation focused editor with a heading selector, link dialog, and emoji picker.
+
+**Install the editor:**
+
+```bash
+npx shadcn@latest add @editorcn/editor
+```
+
+**Then install the controls:**
+
+```bash
+npx shadcn@latest add "https://editorcn.vercel.app/r/custom-controls/heading-select" "https://editorcn.vercel.app/r/custom-controls/insert-link-dialog" "https://editorcn.vercel.app/r/custom-controls/emoji-menu"
+```
+
+<EnhancedEditorCard />
+
+</div>
+
+<div className="rounded-lg border border-border p-6">
+
+### Full Editor
+
+<div className="text-sm text-muted-foreground mb-4">
+  Heading Select · Font Family Select · Font Size · Insert Link Dialog · Emoji
+  Menu · Highlight Color Popover · Insert Table Dialog
+</div>
+
+Everything included — all custom controls in a feature-complete editor with a sticky toolbar.
+
+**Install the editor:**
+
+```bash
+npx shadcn@latest add @editorcn/editor
+```
+
+**Then install all controls at once:**
+
+```bash
+npx shadcn@latest add "https://editorcn.vercel.app/r/custom-controls"
+```
+
+<FullEditorCard />
+
+</div>

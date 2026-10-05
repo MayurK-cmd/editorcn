@@ -1,87 +1,85 @@
 ---
 title: Templates
-description: Prebuilt rich text editor configurations with custom controls baked in.
+description: Complete editors for common UI — chat, comments, documents. Install one with a single command.
 ---
 
-Prebuilt editor configurations that come with custom controls already integrated. Each template is a complete `@editorcn/editor` setup with specific controls tailored to a use case — just install and go.
+Templates are complete editors built from `@editorcn/editor`. Each one installs as a shadcn block, and the CLI adds the editor component for you. You own the code after install, so you can change anything.
 
-Install the base editor and the controls you need, or install everything at once.
+<Callout title="Templates use Tailwind CSS">
+  The editor and static renderer ship plain CSS and work in any React app. Templates are styled with Tailwind CSS v4 and built on shadcn/ui components (Button, Dropdown Menu, Popover, Avatar, Kbd), so your project needs Tailwind and shadcn/ui set up. Run `npx shadcn@latest init` first if it isn't.
+</Callout>
 
-<div className="rounded-lg border border-border p-6 mb-8">
+All templates store content as Tiptap JSON (`editor.getJSON()`) and display it with the [Static Renderer](/docs/static-renderer), which renders React elements instead of HTML. Content renders on the server and stored content can't inject scripts. Use `generateHTML(json, extensions)` from `@tiptap/core` when you need HTML, for example in emails.
 
-### Document Editor
+## Chat Composer
 
-<div className="text-sm text-muted-foreground mb-4">
-  Font Family Select · Font Size · Highlight Color Popover
-</div>
+A chat interface built on the editor: a centered thread, a rounded input with a bubble menu for formatting, copy, edit and regenerate actions on each message, a stop button while a reply streams, and a jump-to-latest button.
 
-A rich text editor focused on document styling — choose fonts, set text size, and highlight important content.
+Pass `onSend` to connect your model. It receives the user's message as Tiptap JSON. Return the reply as plain text, an async iterable of text chunks to stream it, or Tiptap JSON. Use the `signal` to cancel your request when the user presses stop. Throw to mark the message as failed with a retry.
 
-**Install the editor:**
-
-```bash
-npx shadcn@latest add @editorcn/editor
+```tsx
+<ChatComposer
+  onSend={async function* (content, { signal }) {
+    const res = await fetch("/api/chat", {
+      body: JSON.stringify(content),
+      method: "POST",
+      signal,
+    });
+    const reader = res.body!.pipeThrough(new TextDecoderStream()).getReader();
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) return;
+      yield value;
+    }
+  }}
+/>
 ```
 
-**Then install the controls:**
+Turn on `attachments` to let people add images with the `+` button, by pasting, or by dropping them on the input. Files are handed to `onSend` as `files`; uploading them is up to your backend. `accept` (default `image/*`) and `maxFiles` (default 4) limit what can be added. Pass `models` as `{ label, value, icon }` objects to show a model picker; the selected `value` arrives as `model`.
 
-```bash
-npx shadcn@latest add "https://editorcn.vercel.app/r/custom-controls/font-family-select" "https://editorcn.vercel.app/r/custom-controls/font-size" "https://editorcn.vercel.app/r/custom-controls/highlight-color-popover"
+```tsx
+<ChatComposer
+  attachments
+  models={[
+    { icon: <ClaudeIcon />, label: "Claude Opus", value: "claude-opus" },
+    { icon: <ClaudeIcon />, label: "Claude Sonnet", value: "claude-sonnet" },
+  ]}
+  onSend={(content, { files, model, signal }) => sendToYourApi({ content, files, model, signal })}
+/>
 ```
 
-<DocumentEditorCard />
-
-</div>
-
-<div className="rounded-lg border border-border p-6 mb-8">
-
-### Enhanced Editor
-
-<div className="text-sm text-muted-foreground mb-4">
-  Heading Select · Insert Link Dialog · Emoji Menu
-</div>
-
-A content-creation focused editor with a heading selector, link dialog, and emoji picker.
-
-**Install the editor:**
+<TemplateShowcase name="chat-composer" />
 
 ```bash
-npx shadcn@latest add @editorcn/editor
+npx shadcn@latest add "https://editorcn.vercel.app/r/chat-composer.json"
 ```
 
-**Then install the controls:**
+## Comment Box
+
+A comment thread with avatars, relative times, emoji reactions, and a composer built on the editor. People can copy any comment and delete their own. `onPost`, `onReact` and `onDelete` let you save each change to your backend.
+
+```tsx
+<CommentBox
+  currentUser={{ avatar: user.image, id: user.id, name: user.name }}
+  initialComments={comments}
+  onPost={(content) => saveComment(content)}
+  onReact={(id, emoji) => toggleReaction(id, emoji)}
+  onDelete={(id) => deleteComment(id)}
+/>
+```
+
+<TemplateShowcase name="comment-box" />
 
 ```bash
-npx shadcn@latest add "https://editorcn.vercel.app/r/custom-controls/heading-select" "https://editorcn.vercel.app/r/custom-controls/insert-link-dialog" "https://editorcn.vercel.app/r/custom-controls/emoji-menu"
+npx shadcn@latest add "https://editorcn.vercel.app/r/comment-box.json"
 ```
 
-<EnhancedEditorCard />
+## Document Editor
 
-</div>
+A titled document with a full toolbar and an `onChange` hook that returns the document as Tiptap JSON after every change.
 
-<div className="rounded-lg border border-border p-6">
-
-### Full Editor
-
-<div className="text-sm text-muted-foreground mb-4">
-  Heading Select · Font Family Select · Font Size · Insert Link Dialog · Emoji
-  Menu · Highlight Color Popover · Insert Table Dialog
-</div>
-
-Everything included — all custom controls in a feature-complete editor with a sticky toolbar.
-
-**Install the editor:**
+<TemplateShowcase name="document-editor" />
 
 ```bash
-npx shadcn@latest add @editorcn/editor
+npx shadcn@latest add "https://editorcn.vercel.app/r/document-editor.json"
 ```
-
-**Then install all controls at once:**
-
-```bash
-npx shadcn@latest add "https://editorcn.vercel.app/r/custom-controls"
-```
-
-<FullEditorCard />
-
-</div>

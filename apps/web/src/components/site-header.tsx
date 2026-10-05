@@ -16,7 +16,7 @@ const navItems = [
   { href: ROUTES.DOCS_EDITOR, label: "Editor" },
   { href: ROUTES.DOCS_BLOCK_EDITOR, label: "Block Editor" },
   { href: ROUTES.DOCS_CUSTOMIZATION, label: "Customization" },
-  { href: ROUTES.TEMPLATES, label: "Templates" },
+  { href: ROUTES.DOCS_TEMPLATES, label: "Templates" },
 ];
 
 export const SiteHeader = () => (

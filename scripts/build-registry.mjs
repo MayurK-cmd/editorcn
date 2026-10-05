@@ -4,8 +4,10 @@ import { resolve } from "node:path";
 const __dirname = import.meta.dirname;
 const root = resolve(__dirname, "..");
 
+const readText = (path) => readFileSync(path, "utf-8").replaceAll("\r\n", "\n");
+
 const read = (pkg, file) =>
-  readFileSync(resolve(root, "packages", pkg, "src", file), "utf-8");
+  readText(resolve(root, "packages", pkg, "src", file), "utf-8");
 
 const entry = (path, type, pkg, src) => {
   const target = `@components/${path}`;
@@ -13,10 +15,12 @@ const entry = (path, type, pkg, src) => {
 };
 
 const readTemplate = (file) =>
-  readFileSync(
+  readText(
     resolve(root, "apps", "web", "src", "components", "templates", file),
     "utf-8"
-  ).replaceAll("@editorcn/editor", "@/components/editor");
+  )
+    .replaceAll("@editorcn/editor", "@/components/editor")
+    .replaceAll("@editorcn/static-renderer", "@/components/static-renderer");
 
 const templateEntry = (name) => {
   const path = `templates/${name}.tsx`;
@@ -519,7 +523,7 @@ const extensionCoreFiles = [
 );
 
 const readUiComponent = (name) =>
-  readFileSync(
+  readText(
     resolve(root, "packages", "ui", "src", "components", `${name}.tsx`),
     "utf-8"
   );
@@ -546,10 +550,7 @@ const extensionsBaseDeps = [
 ];
 
 const extensionsManifest = JSON.parse(
-  readFileSync(
-    resolve(root, "packages", "extensions", "manifest.json"),
-    "utf-8"
-  )
+  readText(resolve(root, "packages", "extensions", "manifest.json"), "utf-8")
 );
 
 const extensionsConfig = Object.entries(extensionsManifest).map(
@@ -573,10 +574,7 @@ const collectExtensionUi = (name, out = new Map()) => {
   if (out.has(name) || !extensionUiExists(name)) {
     return out;
   }
-  const content = readFileSync(
-    resolve(extensionsUiDir, `${name}.tsx`),
-    "utf-8"
-  );
+  const content = readText(resolve(extensionsUiDir, `${name}.tsx`), "utf-8");
   const imported = [...content.matchAll(/from "\.\/([a-z-]+)"/g)].map(
     (match) => match[1]
   );
@@ -642,7 +640,7 @@ const buildExtensionItem = (config) => {
     styles.push("ui/style.css");
   }
   const styleEntries = styles.map((file) => ({
-    content: readFileSync(
+    content: readText(
       resolve(root, "packages", "extensions", "src", file),
       "utf-8"
     ),
@@ -767,17 +765,6 @@ const catalogItem = (name, title, desc, depsList, fileList) => ({
   type: "registry:component",
 });
 
-const buildBlock = (name, title, desc, files, dependencies) =>
-  buildItemWithType(
-    name,
-    title,
-    desc,
-    files,
-    dependencies,
-    ["editor"],
-    "registry:block"
-  );
-
 const buildItemWithType = (
   name,
   title,
@@ -798,14 +785,19 @@ const buildItemWithType = (
 const templateDeps = {
   "chat-composer": [
     "@tiptap/core@>=3.0.0 <4",
+    "@tiptap/static-renderer@>=3.21.0 <4",
     "@tiptap/react@>=3.0.0 <4",
     "@tiptap/pm@>=3.0.0 <4",
     "@tiptap/starter-kit@>=3.0.0 <4",
     "@tiptap/extension-placeholder@>=3.0.0 <4",
+    "@tiptap/extension-text-style@>=3.0.0 <4",
+    "@tiptap/extension-color@>=3.0.0 <4",
+    "@tiptap/extension-highlight@>=3.0.0 <4",
     "lucide-react@>=0.400.0 <1.0.0",
   ],
   "comment-box": [
     "@tiptap/core@>=3.0.0 <4",
+    "@tiptap/static-renderer@>=3.21.0 <4",
     "@tiptap/react@>=3.0.0 <4",
     "@tiptap/pm@>=3.0.0 <4",
     "@tiptap/starter-kit@>=3.0.0 <4",
@@ -817,7 +809,13 @@ const templateDeps = {
     "@tiptap/pm@>=3.0.0 <4",
     "@tiptap/starter-kit@>=3.0.0 <4",
     "@tiptap/extension-placeholder@>=3.0.0 <4",
-    "@tiptap/extension-underline@>=3.0.0 <4",
+    "@tiptap/extension-link@>=3.0.0 <4",
+    "@tiptap/extension-highlight@>=3.0.0 <4",
+    "@tiptap/extension-task-list@>=3.0.0 <4",
+    "@tiptap/extension-task-item@>=3.0.0 <4",
+    "@tiptap/extension-text-align@>=3.0.0 <4",
+    "@tiptap/extension-character-count@>=3.0.0 <4",
+    "lucide-react@>=0.400.0 <1.0.0",
   ],
 };
 
@@ -828,20 +826,34 @@ const templateItems = [
     files: [templateEntry("chat-composer")],
     name: "chat-composer",
     title: "Chat Composer",
+    ui: [
+      "button",
+      "dropdown-menu",
+      "https://editorcn.vercel.app/r/static-renderer.json",
+    ],
   },
   {
     deps: templateDeps["comment-box"],
-    desc: "A comment thread with a subtle editor input, avatar initials, and an onPost hook.",
+    desc: "A comment thread with avatars, relative times, emoji reactions, a delete menu, and an editor composer with onPost, onReact, and onDelete hooks.",
     files: [templateEntry("comment-box")],
     name: "comment-box",
     title: "Comment Box",
+    ui: [
+      "avatar",
+      "button",
+      "dropdown-menu",
+      "kbd",
+      "popover",
+      "https://editorcn.vercel.app/r/static-renderer.json",
+    ],
   },
   {
     deps: templateDeps["document-editor"],
-    desc: "A titled document editor with a full toolbar and an onChange hook.",
+    desc: "A document editor with a header, collaborators, task lists, a centered writing column, and a stats footer with a shortcuts panel.",
     files: [templateEntry("document-editor")],
     name: "document-editor",
     title: "Document Editor",
+    ui: ["avatar", "button", "dropdown-menu", "kbd", "popover", "tooltip"],
   },
 ];
 
@@ -908,7 +920,15 @@ for (const item of templateItems) {
   writeFileSync(
     resolve(outDir, `${item.name}.json`),
     JSON.stringify(
-      buildBlock(item.name, item.title, item.desc, item.files, item.deps),
+      buildItemWithType(
+        item.name,
+        item.title,
+        item.desc,
+        item.files,
+        item.deps,
+        ["https://editorcn.vercel.app/r/editor.json", ...item.ui],
+        "registry:block"
+      ),
       null,
       2
     )
