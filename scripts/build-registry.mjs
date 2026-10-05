@@ -253,6 +253,12 @@ const blockEditorFiles = [
     "block-editor.tsx"
   ),
   entry(
+    "block-editor/bottom-bar.tsx",
+    "registry:component",
+    "block-editor",
+    "bottom-bar.tsx"
+  ),
+  entry(
     "block-editor/bubble-menu/index.tsx",
     "registry:component",
     "block-editor",

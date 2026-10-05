@@ -1,6 +1,8 @@
 export { BlockEditor } from "./block-editor";
 export { useBlockEditorContext } from "./context";
 export { BubbleMenu } from "./bubble-menu/index";
+export { BottomBar } from "./bottom-bar";
+export type { BottomBarProps } from "./bottom-bar";
 export {
   SlashCommand,
   getSlashCommandSuggestion,
