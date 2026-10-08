@@ -26,7 +26,12 @@ import {
 import { cn } from "@/lib/utils";
 
 import { Composer, UserAvatar } from "./composer";
-import type { CommentItem, CommentReaction, ThreadActions } from "./types";
+import type {
+  CommentItem,
+  CommentReaction,
+  CommentReply,
+  ThreadActions,
+} from "./types";
 import { EMOJIS, EXTENSIONS, ITEM, mention, timeAgo } from "./utils";
 
 const EmojiPicker = ({ onPick }: { onPick: (emoji: string) => void }) => {
@@ -144,7 +149,7 @@ const CommentBody = ({
 }: {
   actions: ThreadActions;
   children?: React.ReactNode;
-  comment: CommentItem;
+  comment: CommentReply;
   onReply: () => void;
   small: boolean;
   stem?: boolean;
@@ -232,11 +237,11 @@ export const CommentThread = ({
   comment: CommentItem;
 }) => {
   const [open, setOpen] = useState(false);
-  const [target, setTarget] = useState<CommentItem | null>(null);
+  const [target, setTarget] = useState<CommentReply | null>(null);
   const replies = comment.replies ?? [];
   const showReplies = open && replies.length > 0;
 
-  const replyBox = (to: CommentItem) =>
+  const replyBox = (to: CommentReply) =>
     target?.id === to.id && (
       <Composer
         author={actions.currentUser}

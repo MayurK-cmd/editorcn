@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { Composer } from "./composer";
 import { CommentThread } from "./thread";
 import type { CommentBoxProps, CommentItem, ThreadActions } from "./types";
-import { mapThread, toggleReaction } from "./utils";
+import { createId, mapThread, toggleReaction } from "./utils";
 
 import "@editorcn/editor/style.css";
 import "@editorcn/static-renderer/style.css";
@@ -36,11 +36,11 @@ export const CommentBox = ({
         author: currentUser,
         content,
         createdAt: new Date().toISOString(),
-        id: crypto.randomUUID(),
+        id: createId(),
       };
       setComments((prev) =>
         parentId
-          ? mapThread(prev, (c) =>
+          ? prev.map((c) =>
               c.id === parentId
                 ? { ...c, replies: [...(c.replies ?? []), comment] }
                 : c
@@ -107,4 +107,5 @@ export type {
   CommentBoxProps,
   CommentItem,
   CommentReaction,
+  CommentReply,
 } from "./types";

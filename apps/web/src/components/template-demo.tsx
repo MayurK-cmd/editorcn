@@ -3,6 +3,7 @@
 import { ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { toast } from "sonner";
 
 import { CommentBox } from "@/components/templates/comment-box";
 import { SimpleDocumentEditor } from "@/components/templates/simple-document-editor";
@@ -123,7 +124,14 @@ const DEMOS = {
         { name: "Noah Kim", src: photo("1507003211169-0a1dd7228f2d") },
         { name: "Lena Novak", src: photo("1438761681033-6461ffad8d80") },
       ]}
-      onShare={() => navigator.clipboard.writeText(globalThis.location.href)}
+      onShare={async () => {
+        try {
+          await navigator.clipboard.writeText(globalThis.location.href);
+          toast.success("Link copied");
+        } catch {
+          toast.error("Couldn't copy the link");
+        }
+      }}
     />
   ),
 };

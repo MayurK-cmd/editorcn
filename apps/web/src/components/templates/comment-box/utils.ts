@@ -1,7 +1,7 @@
 import type { JSONContent } from "@tiptap/core";
 import { StarterKit } from "@tiptap/starter-kit";
 
-import type { CommentItem, CommentReaction } from "./types";
+import type { CommentItem, CommentReaction, CommentReply } from "./types";
 
 export const EMOJIS = ["👍", "❤️", "🎉", "😄", "👀", "🚀"];
 
@@ -68,16 +68,25 @@ export const mention = (name: string): JSONContent => ({
   type: "doc",
 });
 
-export const mapThread = (
-  list: CommentItem[],
-  update: (comment: CommentItem) => CommentItem | null
-): CommentItem[] =>
+export const createId = () =>
+  globalThis.crypto?.randomUUID?.() ??
+  `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+
+const mapLevel = <T extends CommentReply>(
+  list: T[],
+  update: (comment: CommentReply) => CommentReply | null
+): T[] =>
   list.flatMap((comment) => {
     const next = update(comment);
-    if (!next) {
-      return [];
-    }
-    return next.replies
-      ? [{ ...next, replies: mapThread(next.replies, update) }]
-      : [next];
+    return next ? [{ ...comment, ...next }] : [];
   });
+
+export const mapThread = (
+  list: CommentItem[],
+  update: (comment: CommentReply) => CommentReply | null
+): CommentItem[] =>
+  mapLevel(list, update).map((comment) =>
+    comment.replies
+      ? { ...comment, replies: mapLevel(comment.replies, update) }
+      : comment
+  );

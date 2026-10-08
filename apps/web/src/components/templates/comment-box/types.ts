@@ -12,13 +12,16 @@ export interface CommentReaction {
   reacted?: boolean;
 }
 
-export interface CommentItem {
+export interface CommentReply {
   author: CommentAuthor;
   createdAt: string;
   content: JSONContent;
   id: string;
   reactions?: CommentReaction[];
-  replies?: CommentItem[];
+}
+
+export interface CommentItem extends CommentReply {
+  replies?: CommentReply[];
 }
 
 export interface CommentBoxProps {
