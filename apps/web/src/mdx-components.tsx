@@ -27,11 +27,6 @@ import {
 } from "@/components/customization/extensions";
 import { StaticRendererDemo } from "@/components/customization/static-renderer-demo";
 import {
-  DocumentEditorCard,
-  EnhancedEditorCard,
-  FullEditorCard,
-} from "@/components/customization/template-demos";
-import {
   HeadingSelectCard,
   InsertLinkDialogCard,
   HighlightColorPopoverCard,
@@ -70,7 +65,6 @@ export const mdxComponents = {
   Callout,
   CodeBlockCommand,
   CodeTabs,
-  DocumentEditorCard,
   EditorClassNameDemo,
   EditorCustomControlsDemo,
   EditorCustomIconsDemo,
@@ -80,7 +74,6 @@ export const mdxComponents = {
   EditorThemingDemo,
   EditorVariantsDemo,
   EmojiMenuCard,
-  EnhancedEditorCard,
   ExtensionList,
   ExtensionPreview,
   FeatureCard: ({
@@ -112,7 +105,6 @@ export const mdxComponents = {
   ),
   FontFamilySelectCard,
   FontSizeCard,
-  FullEditorCard,
   HeadingSelectCard,
   HighlightColorPopoverCard,
   Image: ({
