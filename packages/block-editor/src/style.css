@@ -964,6 +964,105 @@
   scroll-behavior: smooth;
 }
 
+/* ── Bottom bar (touch devices) ── */
+.block-editor-bottom-bar {
+  display: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .drag-handle,
+  .block-editor-bubble-menu {
+    display: none;
+  }
+
+  .block-editor-content .ProseMirror {
+    padding-left: 0;
+  }
+
+  .block-editor-bottom-bar {
+    position: sticky;
+    bottom: var(--block-editor-keyboard-inset, 0px);
+    z-index: 20;
+    display: block;
+    border-top: 1px solid var(--border);
+    background: var(--background);
+    timeline-scope: --block-editor-bottom-bar;
+  }
+
+  .block-editor-bottom-bar::before,
+  .block-editor-bottom-bar::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    width: 1.5rem;
+    pointer-events: none;
+  }
+
+  .block-editor-bottom-bar::before {
+    left: 0;
+    background: linear-gradient(to right, var(--background), transparent);
+    opacity: 0;
+  }
+
+  .block-editor-bottom-bar::after {
+    right: 0;
+    background: linear-gradient(to left, var(--background), transparent);
+  }
+
+  .block-editor-bottom-bar-scroll {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    height: 3rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    scroll-timeline: --block-editor-bottom-bar x;
+  }
+
+  .block-editor-bottom-bar-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .block-editor-bottom-bar-scroll > div {
+    position: static !important;
+  }
+
+  .block-editor-bottom-bar .block-editor-bubble-dropdown {
+    top: auto;
+    bottom: 100%;
+    left: 0.5rem;
+    margin: 0 0 4px;
+    max-height: 50vh;
+    overflow-y: auto;
+    transform-origin: bottom left;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .block-editor-bottom-bar::before {
+      animation: block-editor-fade-in linear both;
+      animation-timeline: --block-editor-bottom-bar;
+      animation-range: 0 2rem;
+    }
+    .block-editor-bottom-bar::after {
+      opacity: 0;
+      animation: block-editor-fade-in linear reverse both;
+      animation-timeline: --block-editor-bottom-bar;
+      animation-range: calc(100% - 2rem) 100%;
+    }
+  }
+}
+
+@keyframes block-editor-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* ── Suppress transitions on theme switch ── */
 .block-editor-theme-transitioning *,
 .block-editor-theme-transitioning *::before,

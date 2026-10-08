@@ -4,41 +4,10 @@ import { ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ClaudeIcon } from "@/components/icons";
-import { ChatComposer } from "@/components/templates/chat-composer";
 import { CommentBox } from "@/components/templates/comment-box";
-import { DocumentEditor } from "@/components/templates/document-editor";
+import { SimpleDocumentEditor } from "@/components/templates/simple-document-editor";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-
-const DEMO_REPLY =
-  "This reply is streamed word by word from a demo handler. Pass onSend and return a string or an async iterable of text chunks to stream your own model's answer.\n\nSelect text in the input to format it with the bubble menu.";
-
-const wait = (ms: number) =>
-  // eslint-disable-next-line promise/avoid-new
-  new Promise<void>((resolve) => {
-    setTimeout(resolve, ms);
-  });
-
-const demoReply = async function* demoReply(
-  _content: unknown,
-  { signal }: { signal: AbortSignal }
-) {
-  await wait(600);
-  for (const word of DEMO_REPLY.split(" ")) {
-    if (signal.aborted) {
-      return;
-    }
-    await wait(35);
-    yield `${word} `;
-  }
-};
-
-const DEMO_MODELS = ["Opus", "Sonnet", "Haiku"].map((name) => ({
-  icon: <ClaudeIcon className="text-[#D97757]" />,
-  label: `Claude ${name}`,
-  value: `claude-${name.toLowerCase()}`,
-}));
 
 const photo = (id: string) =>
   `https://images.unsplash.com/photo-${id}?w=96&h=96&fit=crop&crop=faces&auto=format&q=80`;
@@ -62,7 +31,7 @@ const DEMO_COMMENTS = [
     author: {
       avatar: photo("1494790108377-be9c29b29330"),
       id: "maya",
-      name: "Maya Chen",
+      name: "Maya Lindqvist",
     },
     content: doc(
       text("The new toolbar feels much lighter. Can we get a "),
@@ -74,6 +43,33 @@ const DEMO_COMMENTS = [
     reactions: [
       { count: 3, emoji: "👍" },
       { count: 1, emoji: "🎉", reacted: true },
+    ],
+    replies: [
+      {
+        author: {
+          avatar: photo("1500648767791-00dcc994a43e"),
+          id: "leo",
+          name: "Leo Fischer",
+        },
+        content: doc(text("+1, tables are the main thing I'm missing.")),
+        createdAt: ago(150),
+        id: "c1-r1",
+        reactions: [{ count: 2, emoji: "👍" }],
+      },
+      {
+        author: {
+          avatar: photo("1534528741775-53994a69daeb"),
+          id: "you",
+          name: "Sofia Martins",
+        },
+        content: doc(
+          text("@Leo Fischer "),
+          text("same here", "italic"),
+          text(". Happy to help test it.")
+        ),
+        createdAt: ago(40),
+        id: "c1-r2",
+      },
     ],
   },
   {
@@ -108,11 +104,9 @@ const DEMO_COMMENTS = [
 ];
 
 const DEMOS = {
-  "chat-composer": (
-    <ChatComposer attachments models={DEMO_MODELS} onSend={demoReply} />
-  ),
-  "comment-box": (
+  "comment-box": (className?: string) => (
     <CommentBox
+      className={className}
       currentUser={{
         avatar: photo("1534528741775-53994a69daeb"),
         id: "you",
@@ -121,13 +115,31 @@ const DEMOS = {
       initialComments={DEMO_COMMENTS}
     />
   ),
-  "document-editor": <DocumentEditor />,
+  "simple-document-editor": (className?: string) => (
+    <SimpleDocumentEditor
+      className={className}
+      collaborators={[
+        { name: "Ava Thompson", src: photo("1494790108377-be9c29b29330") },
+        { name: "Noah Kim", src: photo("1507003211169-0a1dd7228f2d") },
+        { name: "Lena Novak", src: photo("1438761681033-6461ffad8d80") },
+      ]}
+      onShare={() => navigator.clipboard.writeText(globalThis.location.href)}
+    />
+  ),
 };
 
 export type TemplateName = keyof typeof DEMOS;
 
-export const TemplateDemo = ({ name }: { name: string }) =>
-  Object.hasOwn(DEMOS, name) ? DEMOS[name as TemplateName] : notFound();
+export const TemplateDemo = ({
+  className,
+  name,
+}: {
+  className?: string;
+  name: string;
+}) =>
+  Object.hasOwn(DEMOS, name)
+    ? DEMOS[name as TemplateName](className)
+    : notFound();
 
 export const TemplateTabs = ({
   code,
@@ -151,7 +163,7 @@ export const TemplateTabs = ({
     </div>
     <TabsContent value="preview" className="pt-4">
       <div className="bg-muted/30 rounded-xl border p-4 sm:p-8">
-        {DEMOS[name]}
+        {DEMOS[name]()}
       </div>
     </TabsContent>
     <TabsContent value="code" className="pt-4">

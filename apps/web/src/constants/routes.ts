@@ -17,6 +17,7 @@ export const ROUTES = {
   DOCS_STATIC_RENDERER: "/docs/static-renderer",
   DOCS_STYLING: "/docs/styling",
   DOCS_TEMPLATES: "/docs/templates",
+  DOCS_TOOLBAR_PRESETS: "/docs/toolbar-presets",
   HOME: "/",
   LLMS: "/llms.txt",
   LLMS_FULL: "/llms-full.txt",

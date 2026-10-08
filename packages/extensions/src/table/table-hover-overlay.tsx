@@ -386,6 +386,9 @@ export const TableHoverOverlay = ({
     };
 
     const handleLeave = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse") {
+        return;
+      }
       const related = e.relatedTarget as HTMLElement | null;
       if (
         related &&

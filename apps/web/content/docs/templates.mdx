@@ -1,85 +1,111 @@
 ---
 title: Templates
-description: Complete editors for common UI — chat, comments, documents. Install one with a single command.
+description: Complete editors for common UI — comments and documents. Install one with a single command.
 ---
 
-Templates are complete editors built from `@editorcn/editor`. Each one installs as a shadcn block, and the CLI adds the editor component for you. You own the code after install, so you can change anything.
+Templates are complete editors built from `@editorcn/editor`. Each one installs as a shadcn block: the CLI adds the template, the editor, and every component and extension it depends on. You own the code after install, so you can change anything. Each template lands in its own folder, `components/templates/<name>/`, split into small files (types, constants, toolbar, panels and so on) with `index.tsx` as the entry point.
 
 <Callout title="Templates use Tailwind CSS">
-  The editor and static renderer ship plain CSS and work in any React app. Templates are styled with Tailwind CSS v4 and built on shadcn/ui components (Button, Dropdown Menu, Popover, Avatar, Kbd), so your project needs Tailwind and shadcn/ui set up. Run `npx shadcn@latest init` first if it isn't.
+  The editor and static renderer ship plain CSS and work in any React app.
+  Templates are styled with Tailwind CSS v4 and built on shadcn/ui components,
+  so your project needs Tailwind and shadcn/ui. Run `npx shadcn@latest init`
+  first if it isn't set up.
 </Callout>
 
-All templates store content as Tiptap JSON (`editor.getJSON()`) and display it with the [Static Renderer](/docs/static-renderer), which renders React elements instead of HTML. Content renders on the server and stored content can't inject scripts. Use `generateHTML(json, extensions)` from `@tiptap/core` when you need HTML, for example in emails.
+<Callout title="Already using Tiptap?">
+  Tiptap packages must all be on the same version. The CLI installs the latest
+  3.x, so if your project already has `@tiptap/*` packages on an older 3.x
+  release, npm stops with an `ERESOLVE` peer dependency error. Update the
+  packages you already have first, for example `npm install @tiptap/react@latest
+  @tiptap/pm@latest @tiptap/starter-kit@latest`, then add the template.
+</Callout>
 
-## Chat Composer
+Templates work with shadcn/ui built on either Radix UI or Base UI.
 
-A chat interface built on the editor: a centered thread, a rounded input with a bubble menu for formatting, copy, edit and regenerate actions on each message, a stop button while a reply streams, and a jump-to-latest button.
-
-Pass `onSend` to connect your model. It receives the user's message as Tiptap JSON. Return the reply as plain text, an async iterable of text chunks to stream it, or Tiptap JSON. Use the `signal` to cancel your request when the user presses stop. Throw to mark the message as failed with a retry.
-
-```tsx
-<ChatComposer
-  onSend={async function* (content, { signal }) {
-    const res = await fetch("/api/chat", {
-      body: JSON.stringify(content),
-      method: "POST",
-      signal,
-    });
-    const reader = res.body!.pipeThrough(new TextDecoderStream()).getReader();
-    for (;;) {
-      const { done, value } = await reader.read();
-      if (done) return;
-      yield value;
-    }
-  }}
-/>
-```
-
-Turn on `attachments` to let people add images with the `+` button, by pasting, or by dropping them on the input. Files are handed to `onSend` as `files`; uploading them is up to your backend. `accept` (default `image/*`) and `maxFiles` (default 4) limit what can be added. Pass `models` as `{ label, value, icon }` objects to show a model picker; the selected `value` arrives as `model`.
-
-```tsx
-<ChatComposer
-  attachments
-  models={[
-    { icon: <ClaudeIcon />, label: "Claude Opus", value: "claude-opus" },
-    { icon: <ClaudeIcon />, label: "Claude Sonnet", value: "claude-sonnet" },
-  ]}
-  onSend={(content, { files, model, signal }) => sendToYourApi({ content, files, model, signal })}
-/>
-```
-
-<TemplateShowcase name="chat-composer" />
-
-```bash
-npx shadcn@latest add "https://editorcn.vercel.app/r/chat-composer.json"
-```
+All templates store content as Tiptap JSON (`editor.getJSON()`) and display it with the [Static Renderer](/docs/static-renderer), which renders React elements instead of HTML. Content renders on the server, and stored content can't inject scripts. Use `generateHTML(json, extensions)` from `@tiptap/core` when you need HTML, for example in emails.
 
 ## Comment Box
 
-A comment thread with avatars, relative times, emoji reactions, and a composer built on the editor. People can copy any comment and delete their own. `onPost`, `onReact` and `onDelete` let you save each change to your backend.
-
-```tsx
-<CommentBox
-  currentUser={{ avatar: user.image, id: user.id, name: user.name }}
-  initialComments={comments}
-  onPost={(content) => saveComment(content)}
-  onReact={(id, emoji) => toggleReaction(id, emoji)}
-  onDelete={(id) => deleteComment(id)}
-/>
-```
+A comment thread with avatars, relative times, emoji reactions, YouTube-style replies and a composer built on the editor. Replies are one level deep and collapse under each comment; replying to a reply adds to the same thread and starts with an @mention. People can copy any comment and delete their own.
 
 <TemplateShowcase name="comment-box" />
+
+### Installation
 
 ```bash
 npx shadcn@latest add "https://editorcn.vercel.app/r/comment-box.json"
 ```
 
-## Document Editor
+### Usage
 
-A titled document with a full toolbar and an `onChange` hook that returns the document as Tiptap JSON after every change.
+Each callback fires after the change shows on screen, so you can save it to your backend. `onPost` receives the parent comment's id when the new comment is a reply.
 
-<TemplateShowcase name="document-editor" />
+```tsx
+import { CommentBox } from "@/components/templates/comment-box";
+
+export const Comments = ({ comments, user }) => (
+  <CommentBox
+    currentUser={{ avatar: user.image, id: user.id, name: user.name }}
+    initialComments={comments}
+    onPost={(content, parentId) => saveComment({ content, parentId })}
+    onReact={(id, emoji) => toggleReaction(id, emoji)}
+    onDelete={(id) => deleteComment(id)}
+  />
+);
+```
+
+### Props
+
+| Prop              | Type            | Description                      |
+| ----------------- | --------------- | -------------------------------- |
+| `currentUser`     | `CommentAuthor` | The person writing               |
+| `initialComments` | `CommentItem[]` | Comments with optional `replies` |
+| `onPost`          | `function`      | Gets `(content, parentId?)`      |
+| `onReact`         | `function`      | Gets `(id, emoji)`               |
+| `onDelete`        | `function`      | Gets the deleted comment `id`    |
+| `title`           | `string`        | Header title, default `Comments` |
+| `placeholder`     | `string`        | Composer placeholder             |
+| `className`       | `string`        | Outer container classes          |
+
+## Simple Document Editor
+
+A document page: a breadcrumb header with collaborators, a floating toolbar, and a paper-style page with a large editable title. The toolbar covers text styles, fonts, text and highlight colors, superscript and subscript, lists with indent and outdent, alignment, and an Insert menu for images, tables, quotes, code blocks and dividers. A status bar shows word count, reading time and keyboard shortcuts.
+
+<TemplateShowcase name="simple-document-editor" />
+
+### Installation
 
 ```bash
-npx shadcn@latest add "https://editorcn.vercel.app/r/document-editor.json"
+npx shadcn@latest add "https://editorcn.vercel.app/r/simple-document-editor.json"
 ```
+
+The CLI also installs the [Image Placeholder](/docs/extensions/image-placeholder) and [Table](/docs/extensions/table) extensions.
+
+### Usage
+
+```tsx
+import { SimpleDocumentEditor } from "@/components/templates/simple-document-editor";
+
+export const Doc = ({ doc }) => (
+  <SimpleDocumentEditor
+    initialTitle={doc.title}
+    initialContent={doc.content}
+    onChange={(content) => saveDocument(doc.id, content)}
+    onTitleChange={(title) => renameDocument(doc.id, title)}
+    onShare={() => openShareDialog(doc.id)}
+  />
+);
+```
+
+### Props
+
+| Prop             | Type                     | Description                          |
+| ---------------- | ------------------------ | ------------------------------------ |
+| `initialContent` | `Content`                | Tiptap JSON or HTML to start with    |
+| `initialTitle`   | `string`                 | Title for the breadcrumb and page    |
+| `onChange`       | `function`               | Gets the document as Tiptap JSON     |
+| `onTitleChange`  | `function`               | Gets the new title                   |
+| `onShare`        | `function`               | Shows a Share button when set        |
+| `collaborators`  | `DocumentCollaborator[]` | Avatars in the header                |
+| `path`           | `string[]`               | Breadcrumb segments before the title |
+| `className`      | `string`                 | Outer container classes              |

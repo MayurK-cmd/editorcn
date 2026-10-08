@@ -1,32 +1,56 @@
 import { ComponentCode } from "@/components/component-code";
 import { TemplateTabs } from "@/components/template-demo";
 import type { TemplateName } from "@/components/template-demo";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { highlightCode } from "@/lib/highlight-code";
 
-import chatComposerItem from "../../public/r/chat-composer.json";
 import commentBoxItem from "../../public/r/comment-box.json";
-import documentEditorItem from "../../public/r/document-editor.json";
+import simpleDocumentEditorItem from "../../public/r/simple-document-editor.json";
 
 const ITEMS = {
-  "chat-composer": chatComposerItem,
   "comment-box": commentBoxItem,
-  "document-editor": documentEditorItem,
+  "simple-document-editor": simpleDocumentEditorItem,
 } satisfies Record<TemplateName, unknown>;
 
 export const TemplateShowcase = async ({ name }: { name: TemplateName }) => {
-  const [file] = ITEMS[name].files;
-  const highlighted = await highlightCode(file.content, "tsx");
+  const files = await Promise.all(
+    ITEMS[name].files.map(async (file) => {
+      const language = file.path.endsWith(".tsx") ? "tsx" : "ts";
+      return {
+        ...file,
+        highlighted: await highlightCode(file.content, language),
+        language,
+      };
+    })
+  );
 
   return (
     <TemplateTabs
       code={
-        <ComponentCode
-          className="[&>pre]:max-h-[32rem]"
-          code={file.content}
-          highlightedCode={highlighted}
-          language="tsx"
-          title={file.path}
-        />
+        <Tabs defaultValue={files[0].path}>
+          <TabsList className="h-auto flex-wrap justify-start">
+            {files.map((file) => (
+              <TabsTrigger
+                key={file.path}
+                className="flex-none font-mono text-xs"
+                value={file.path}
+              >
+                {file.path.split("/").pop()}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {files.map((file) => (
+            <TabsContent key={file.path} className="pt-2" value={file.path}>
+              <ComponentCode
+                className="[&>pre]:max-h-[32rem]"
+                code={file.content}
+                highlightedCode={file.highlighted}
+                language={file.language}
+                title={file.path}
+              />
+            </TabsContent>
+          ))}
+        </Tabs>
       }
       name={name}
     />

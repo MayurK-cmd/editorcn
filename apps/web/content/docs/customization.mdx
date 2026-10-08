@@ -257,6 +257,20 @@ The `rte-editor-icon` class controls icon sizing in the toolbar. Apply it to you
 
 See the [Styling docs](/docs/styling#change-icon-size) for more on sizing.
 
+### Icon Library
+
+The toolbar icons ship with **lucide-react**. If your `components.json` uses a different `iconLibrary`, install the matching set after the editor — it overwrites `editor/icons.tsx` and installs only that set's package:
+
+| `iconLibrary`      | Install                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------- |
+| `lucide` (default) | nothing — already included                                                          |
+| `phosphor`         | `npx shadcn@latest add "https://editorcn.vercel.app/r/editor-icons-phosphor.json"`  |
+| `tabler`           | `npx shadcn@latest add "https://editorcn.vercel.app/r/editor-icons-tabler.json"`    |
+| `hugeicons`        | `npx shadcn@latest add "https://editorcn.vercel.app/r/editor-icons-hugeicons.json"` |
+| `remixicon`        | `npx shadcn@latest add "https://editorcn.vercel.app/r/editor-icons-remixicon.json"` |
+
+To migrate an existing install instead: `npx shadcn@latest migrate icons --from lucide --to phosphor "src/components/editor/**"`.
+
 ## BlockEditor
 
 ### Default
@@ -348,6 +362,16 @@ Custom items appear at the top of the menu. Built-in items with the same `id` ar
 ### Custom Icon Overrides
 
 Replace any built-in icon via the `icons` prop. All 28 icons accept a React node — use inline SVGs, emoji, or any icon library. The defaults come from **lucide-react** and inherit your theme automatically (`currentColor`).
+
+If your `components.json` uses a different `iconLibrary`, install the matching set after the block editor — it overwrites `block-editor/icons.tsx` and installs only that set's package:
+
+| `iconLibrary`      | Install                                                                                   |
+| ------------------ | ----------------------------------------------------------------------------------------- |
+| `lucide` (default) | nothing — already included                                                                |
+| `phosphor`         | `npx shadcn@latest add "https://editorcn.vercel.app/r/block-editor-icons-phosphor.json"`  |
+| `tabler`           | `npx shadcn@latest add "https://editorcn.vercel.app/r/block-editor-icons-tabler.json"`    |
+| `hugeicons`        | `npx shadcn@latest add "https://editorcn.vercel.app/r/block-editor-icons-hugeicons.json"` |
+| `remixicon`        | `npx shadcn@latest add "https://editorcn.vercel.app/r/block-editor-icons-remixicon.json"` |
 
 ```tsx
 import { BlockEditor, DEFAULT_ICONS } from "@/components/block-editor";

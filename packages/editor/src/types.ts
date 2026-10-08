@@ -1,6 +1,6 @@
 import type { Editor } from "@tiptap/react";
 
-import type { RichTextEditorIcons } from "./icons";
+import type { RichTextEditorIcons } from "./icon-types";
 import type { RichTextEditorLabels } from "./labels";
 
 export type RichTextEditorVariant = "default" | "subtle" | "compact";

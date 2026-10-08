@@ -15,10 +15,11 @@ const PreviewPage = async ({
   const { name } = await params;
 
   return (
-    <main className="bg-background flex min-h-svh items-start justify-center p-4 sm:p-10">
-      <div className="w-full max-w-5xl">
-        <TemplateDemo name={name} />
-      </div>
+    <main className="bg-background h-svh">
+      <TemplateDemo
+        className="h-full max-h-none! w-full rounded-none! border-0! shadow-none!"
+        name={name}
+      />
     </main>
   );
 };

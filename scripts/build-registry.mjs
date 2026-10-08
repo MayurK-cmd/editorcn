@@ -1,4 +1,10 @@
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  writeFileSync,
+} from "node:fs";
 import { resolve } from "node:path";
 
 const __dirname = import.meta.dirname;
@@ -20,17 +26,31 @@ const readTemplate = (file) =>
     "utf-8"
   )
     .replaceAll("@editorcn/editor", "@/components/editor")
-    .replaceAll("@editorcn/static-renderer", "@/components/static-renderer");
+    .replaceAll("@editorcn/static-renderer", "@/components/static-renderer")
+    .replaceAll(
+      "@editorcn/extensions/table-hover-overlay",
+      "@/components/extensions/table/table-hover-overlay"
+    )
+    .replaceAll("@editorcn/extensions/", "@/components/extensions/");
 
-const templateEntry = (name) => {
-  const path = `templates/${name}.tsx`;
-  return {
-    content: readTemplate(`${name}.tsx`),
-    path,
-    target: `@components/${path}`,
-    type: "registry:block",
-  };
-};
+const templateEntry = (name) =>
+  readdirSync(
+    resolve(root, "apps", "web", "src", "components", "templates", name)
+  )
+    .toSorted(
+      (a, b) =>
+        Number(b === "index.tsx") - Number(a === "index.tsx") ||
+        a.localeCompare(b)
+    )
+    .map((file) => {
+      const path = `templates/${name}/${file}`;
+      return {
+        content: readTemplate(`${name}/${file}`),
+        path,
+        target: `@components/${path}`,
+        type: "registry:block",
+      };
+    });
 
 const editorFiles = [
   entry("editor/index.ts", "registry:component", "editor", "index.ts"),
@@ -71,7 +91,19 @@ const editorFiles = [
     "rte-controls-group.tsx"
   ),
   entry("editor/labels.ts", "registry:component", "editor", "labels.ts"),
+  entry(
+    "editor/icon-types.ts",
+    "registry:component",
+    "editor",
+    "icon-types.ts"
+  ),
   entry("editor/icons.tsx", "registry:component", "editor", "icons.tsx"),
+  entry(
+    "editor/language-icons.tsx",
+    "registry:component",
+    "editor",
+    "language-icons.tsx"
+  ),
   entry("editor/types.ts", "registry:component", "editor", "types.ts"),
   entry("editor/style.css", "registry:style", "editor", "style.css"),
   entry(
@@ -261,6 +293,12 @@ const blockEditorFiles = [
     "block-editor.tsx"
   ),
   entry(
+    "block-editor/bottom-bar.tsx",
+    "registry:component",
+    "block-editor",
+    "bottom-bar.tsx"
+  ),
+  entry(
     "block-editor/bubble-menu/index.tsx",
     "registry:component",
     "block-editor",
@@ -315,10 +353,22 @@ const blockEditorFiles = [
     "context.tsx"
   ),
   entry(
+    "block-editor/icon-types.ts",
+    "registry:component",
+    "block-editor",
+    "icon-types.ts"
+  ),
+  entry(
     "block-editor/icons.tsx",
     "registry:component",
     "block-editor",
     "icons.tsx"
+  ),
+  entry(
+    "block-editor/language-icons.tsx",
+    "registry:component",
+    "block-editor",
+    "language-icons.tsx"
   ),
   entry(
     "block-editor/labels.ts",
@@ -504,6 +554,61 @@ const staticRendererFiles = [
     "style.css"
   ),
 ];
+
+const iconSetEntry = (dir, pkg, set) => {
+  const path = `${dir}/icons.tsx`;
+  const src = `icons-${set === "remixicon" ? "remix" : set}.tsx`;
+  const content = read(pkg, src);
+  assertNoSelfImport(dir, set, content);
+  return {
+    content,
+    path,
+    target: `@components/${path}`,
+    type: "registry:component",
+  };
+};
+
+const assertNoSelfImport = (dir, set, content) => {
+  const selfImport = new RegExp(`from "\\./icons"`);
+  if (selfImport.test(content)) {
+    throw new Error(
+      `icons-${set}.tsx (${dir}) imports from "./icons", which it overwrites. Import the icon types from "./icon-types" instead.`
+    );
+  }
+};
+
+const iconSetDeps = {
+  hugeicons: ["@hugeicons/react@^1.1.10", "@hugeicons/core-free-icons@^4.3.5"],
+  phosphor: ["@phosphor-icons/react@^2.1.10"],
+  remixicon: ["@remixicon/react@^4.9.0"],
+  tabler: ["@tabler/icons-react@^3.48.0"],
+};
+
+const iconSetTitles = {
+  hugeicons: "HugeIcons",
+  phosphor: "Phosphor Icons",
+  remixicon: "Remix Icon",
+  tabler: "Tabler Icons",
+};
+
+const iconSetItems = ["phosphor", "tabler", "hugeicons", "remixicon"].flatMap(
+  (set) => [
+    {
+      deps: iconSetDeps[set],
+      description: `${iconSetTitles[set]} variant of the Rich Text Editor icons. Install after the editor item; overwrites editor/icons.tsx.`,
+      files: [iconSetEntry("editor", "editor", set)],
+      name: `editor-icons-${set}`,
+      title: `Rich Text Editor (${iconSetTitles[set]})`,
+    },
+    {
+      deps: iconSetDeps[set],
+      description: `${iconSetTitles[set]} variant of the Block Editor icons. Install after the block-editor item; overwrites block-editor/icons.tsx.`,
+      files: [iconSetEntry("block-editor", "block-editor", set)],
+      name: `block-editor-icons-${set}`,
+      title: `Block Editor (${iconSetTitles[set]})`,
+    },
+  ]
+);
 
 const extensionCoreFiles = [
   "index.ts",
@@ -783,18 +888,6 @@ const buildItemWithType = (
 };
 
 const templateDeps = {
-  "chat-composer": [
-    "@tiptap/core@>=3.0.0 <4",
-    "@tiptap/static-renderer@>=3.21.0 <4",
-    "@tiptap/react@>=3.0.0 <4",
-    "@tiptap/pm@>=3.0.0 <4",
-    "@tiptap/starter-kit@>=3.0.0 <4",
-    "@tiptap/extension-placeholder@>=3.0.0 <4",
-    "@tiptap/extension-text-style@>=3.0.0 <4",
-    "@tiptap/extension-color@>=3.0.0 <4",
-    "@tiptap/extension-highlight@>=3.0.0 <4",
-    "lucide-react@>=0.400.0 <1.0.0",
-  ],
   "comment-box": [
     "@tiptap/core@>=3.0.0 <4",
     "@tiptap/static-renderer@>=3.21.0 <4",
@@ -803,7 +896,7 @@ const templateDeps = {
     "@tiptap/starter-kit@>=3.0.0 <4",
     "@tiptap/extension-placeholder@>=3.0.0 <4",
   ],
-  "document-editor": [
+  "simple-document-editor": [
     "@tiptap/core@>=3.0.0 <4",
     "@tiptap/react@>=3.0.0 <4",
     "@tiptap/pm@>=3.0.0 <4",
@@ -814,28 +907,20 @@ const templateDeps = {
     "@tiptap/extension-task-list@>=3.0.0 <4",
     "@tiptap/extension-task-item@>=3.0.0 <4",
     "@tiptap/extension-text-align@>=3.0.0 <4",
-    "@tiptap/extension-character-count@>=3.0.0 <4",
+    "@tiptap/extension-text-style@>=3.0.0 <4",
+    "@tiptap/extension-color@>=3.0.0 <4",
+    "@tiptap/extension-font-family@>=3.0.0 <4",
+    "@tiptap/extension-subscript@>=3.0.0 <4",
+    "@tiptap/extension-superscript@>=3.0.0 <4",
     "lucide-react@>=0.400.0 <1.0.0",
   ],
 };
 
 const templateItems = [
   {
-    deps: templateDeps["chat-composer"],
-    desc: "A chat panel with a compact editor input, message bubbles, and an onSend hook for your backend.",
-    files: [templateEntry("chat-composer")],
-    name: "chat-composer",
-    title: "Chat Composer",
-    ui: [
-      "button",
-      "dropdown-menu",
-      "https://editorcn.vercel.app/r/static-renderer.json",
-    ],
-  },
-  {
     deps: templateDeps["comment-box"],
     desc: "A comment thread with avatars, relative times, emoji reactions, a delete menu, and an editor composer with onPost, onReact, and onDelete hooks.",
-    files: [templateEntry("comment-box")],
+    files: templateEntry("comment-box"),
     name: "comment-box",
     title: "Comment Box",
     ui: [
@@ -848,12 +933,21 @@ const templateItems = [
     ],
   },
   {
-    deps: templateDeps["document-editor"],
-    desc: "A document editor with a header, collaborators, task lists, a centered writing column, and a stats footer with a shortcuts panel.",
-    files: [templateEntry("document-editor")],
-    name: "document-editor",
-    title: "Document Editor",
-    ui: ["avatar", "button", "dropdown-menu", "kbd", "popover", "tooltip"],
+    deps: templateDeps["simple-document-editor"],
+    desc: "A document page with a breadcrumb header, collaborators, a floating toolbar, task lists, and a status bar with word count and shortcuts.",
+    files: templateEntry("simple-document-editor"),
+    name: "simple-document-editor",
+    title: "Simple Document Editor",
+    ui: [
+      "avatar",
+      "button",
+      "dropdown-menu",
+      "kbd",
+      "popover",
+      "tooltip",
+      "https://editorcn.vercel.app/r/table.json",
+      "https://editorcn.vercel.app/r/image-placeholder.json",
+    ],
   },
 ];
 
@@ -935,6 +1029,44 @@ for (const item of templateItems) {
   );
 }
 
+const writtenIconsets = new Map();
+
+for (const item of iconSetItems) {
+  writeFileSync(
+    resolve(outDir, `${item.name}.json`),
+    JSON.stringify(
+      buildItem(item.name, item.title, item.description, item.files, item.deps),
+      null,
+      2
+    )
+  );
+  writtenIconsets.set(item.name, item);
+}
+
+for (const [name, item] of writtenIconsets) {
+  const dir = name.startsWith("editor-icons-") ? "editor" : "block-editor";
+  const [firstFile] = item.files;
+  const { content } = firstFile;
+
+  if (/from "\.\/icons"/.test(content)) {
+    throw new Error(
+      `${name}: icons.tsx imports "./icons", which it overwrites.`
+    );
+  }
+
+  if (dir === "block-editor" && !/export const HeadingIcon/.test(content)) {
+    throw new Error(
+      `${name}: icons.tsx must export HeadingIcon; bubble-menu/node-selector.tsx imports it.`
+    );
+  }
+
+  if (!/from "\.\/icon-types"/.test(content)) {
+    throw new Error(
+      `${name}: icons.tsx should take its types from "./icon-types".`
+    );
+  }
+}
+
 const catalog = {
   $schema: "https://ui.shadcn.com/schema/registry.json",
   homepage: "https://editorcn.vercel.app",
@@ -977,6 +1109,15 @@ const catalog = {
       title: item.title,
       type: "registry:block",
     })),
+    ...iconSetItems.map((item) =>
+      catalogItem(
+        item.name,
+        item.title,
+        item.description,
+        item.deps,
+        item.files
+      )
+    ),
   ],
   name: "editorcn",
 };
@@ -994,5 +1135,8 @@ for (const item of extensionsItems) {
   console.log(`  apps/web/public/r/${item.name}.json`);
 }
 for (const item of templateItems) {
+  console.log(`  apps/web/public/r/${item.name}.json`);
+}
+for (const item of iconSetItems) {
   console.log(`  apps/web/public/r/${item.name}.json`);
 }
