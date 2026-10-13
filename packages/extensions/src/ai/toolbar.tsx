@@ -67,19 +67,21 @@ export const AiToolbar = ({
       (a, b) => a === b
     ) ?? true;
 
-  const insertResult = useCallback((edit: Editor, result: string) => {
-    const { from, to } = edit.state.selection;
-    if (from === to) {
-      edit.chain().focus().insertContentAt(from, result).run();
-    } else {
-      edit
-        .chain()
-        .focus()
-        .deleteRange({ from, to })
-        .insertContentAt(from, result)
-        .run();
-    }
-  }, []);
+  const insertResult = useCallback(
+    (edit: Editor, result: string, from: number, to: number) => {
+      if (from === to) {
+        edit.chain().focus().insertContentAt(from, result).run();
+      } else {
+        edit
+          .chain()
+          .focus()
+          .deleteRange({ from, to })
+          .insertContentAt(from, result)
+          .run();
+      }
+    },
+    []
+  );
 
   const onSubmit = useCallback(async () => {
     if (
@@ -104,7 +106,11 @@ export const AiToolbar = ({
         model,
         prompt: prompt.trim(),
       });
-      insertResult(editor, result);
+      if (editor.isDestroyed) {
+        return;
+      }
+      const end = editor.state.doc.content.size;
+      insertResult(editor, result, Math.min(from, end), Math.min(to, end));
       setPrompt("");
       setOpen(false);
     } catch (error) {

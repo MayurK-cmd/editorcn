@@ -20,8 +20,7 @@ export const POST = async (request: Request) => {
     context,
   } = (await request.json()) as AiRouteBody;
 
-  // BYOK first, server env as fallback.
-  const key = apiKey?.trim() || process.env.OPENAI_API_KEY;
+  const key = apiKey?.trim();
   if (!key) {
     return NextResponse.json(
       { error: "Missing OpenAI API key." },
