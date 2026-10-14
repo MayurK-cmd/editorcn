@@ -25,9 +25,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^4.0.74",
     "@tiptap/extension-gapcursor": "^3.30.0",
-    "ai": "^7.0.113",
     "lucide-react": "catalog:"
   },
   "devDependencies": {

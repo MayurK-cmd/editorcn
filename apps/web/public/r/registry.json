@@ -561,11 +561,9 @@
       "dependencies": [
         "@tiptap/core@>=3.0.0 <4",
         "@tiptap/react@>=3.0.0 <4",
-        "lucide-react@>=0.400.0 <1.0.0",
-        "ai@^7.0.0",
-        "@ai-sdk/openai@^4.0.0"
+        "lucide-react@>=0.400.0 <1.0.0"
       ],
-      "description": "A toolbar button that sends a free prompt (plus the current selection as context) to OpenAI and inserts the generated text. Bring your own API key, no server needed.",
+      "description": "An always-visible AI prompt bar pinned to the bottom of the editor. Provider-agnostic: you pass an onGenerate function and connect it to any model or backend.",
       "files": [
         {
           "path": "extensions/core/index.ts",
@@ -600,11 +598,7 @@
           "type": "registry:component"
         },
         {
-          "path": "extensions/ui/button.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "extensions/ui/input.tsx",
+          "path": "extensions/ui/dropdown-item.tsx",
           "type": "registry:component"
         },
         {
@@ -621,6 +615,10 @@
         },
         {
           "path": "extensions/ui/popover-content.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "extensions/ui/separator.tsx",
           "type": "registry:component"
         },
         {

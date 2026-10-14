@@ -23,16 +23,10 @@
   },
   "ai": {
     "title": "AI Assistant",
-    "description": "A toolbar button that sends a free prompt (plus the current selection as context) to OpenAI and inserts the generated text. Bring your own API key, no server needed.",
+    "description": "An always-visible AI prompt bar pinned to the bottom of the editor. Provider-agnostic: you pass an onGenerate function and connect it to any model or backend.",
     "toolbar": "ai/toolbar.tsx",
     "css": ["ai/style.css"],
-    "ui": [
-      "button",
-      "input",
-      "popover",
-      "popover-content"
-    ],
-    "deps": ["ai@^7.0.0", "@ai-sdk/openai@^4.0.0"]
+    "ui": ["dropdown-item", "popover", "popover-content", "separator"]
   },
   "table": {
     "title": "Table",

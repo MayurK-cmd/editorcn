@@ -1,52 +1,43 @@
 ---
 title: AI Assistant
-description: A toolbar button that sends a free prompt to OpenAI and inserts the generated text. Bring your own API key, no server needed.
+description: An always-visible AI prompt bar pinned to the bottom of the editor. Bring any model — you connect it with a single function.
 ---
 
-The AI Assistant extension adds an `AiToolbar` sparkles button to any toolbar editor. Click it, type a free prompt, and the generated text replaces the current selection — or is inserted at the cursor when nothing is selected. The selected text is sent along as context automatically.
+The AI Assistant extension adds an `AiPromptBar` pinned to the bottom of any toolbar editor. Type a prompt, or pick a preset from the **Tasks** menu (fix spelling, tighten wording, write a summary, add a checklist, list open questions or owners). The context chip shows what is sent along: the selection, or the whole document when nothing is selected.
 
 <ExtensionPreview slug="ai" editor="toolbar" />
 
-Paste an OpenAI API key above to try it live. The preview posts your prompt to the app's `/api/ai` route below, which calls OpenAI server-side.
-
-> OpenAI's API sends no CORS headers, so browsers block direct calls to it. The toolbar therefore accepts an `endpoint` prop: point it at a same-origin route that forwards to OpenAI (snippet below). Only use keys you are willing to expose client-side — for production apps, keep the key in server env (`OPENAI_API_KEY`) instead of collecting it in the browser.
+The demo above runs on mock responses, so no API key is needed. The extension itself ships no AI SDK and no provider: you pass an `onGenerate` function and connect it to any model, provider or backend.
 
 ## Installation
 
-Run the following command to install the extension, its toolbar component and the shared extension runtime:
+Run the following command to install the extension, its prompt bar component and the shared extension runtime:
 
 ```bash
 npx shadcn@latest add "https://editorcn.vercel.app/r/ai.json"
 ```
 
-This installs `extensions/ai`, `extensions/core/`, `extensions/ui/` and the `ai` + `@ai-sdk/openai` packages. AI styles and shared UI styles are installed as `extensions/ai/style.css` and `extensions/ui/style.css`.
+This installs `extensions/ai` and `extensions/core/`. AI styles are installed as `extensions/ai/style.css`. No AI packages are added — install whichever SDK your backend uses.
 
-To install the files manually instead, install these packages and copy the code from the [package source](https://github.com/AbdullahMukadam/editorcn/tree/main/packages/extensions/src/ai):
-
-```bash
-npm install ai @ai-sdk/openai
-```
+To install the files manually instead, copy the code from the [package source](https://github.com/AbdullahMukadam/editorcn/tree/main/packages/extensions/src/ai).
 
 ## Usage
 
-Render `AiToolbar` inside a `ToolbarProvider` and pass your user's OpenAI key. No tiptap extension registration is needed — the toolbar works with any editor.
+Render `AiPromptBar` after `RichTextEditor.Content` and pass the editor and an `onGenerate` function. The bar is `position: sticky` at the bottom of the editor, so it stays visible while a long document scrolls. No tiptap extension registration is needed.
 
 ```tsx
 "use client";
 
-import { useState } from "react";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 
 import { RichTextEditor } from "@/components/editor";
-import { ToolbarProvider } from "@/components/extensions/core";
-import { AiToolbar } from "@/components/extensions/ai/toolbar";
+import { AiPromptBar } from "@/components/extensions/ai/toolbar";
 
 import "@/components/editor/style.css";
 import "@/components/extensions/ai/style.css";
-import "@/components/extensions/ui/style.css";
 
-export function MyEditor({ apiKey }: { apiKey: string }) {
+export function MyEditor() {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [StarterKit],
@@ -59,74 +50,108 @@ export function MyEditor({ apiKey }: { apiKey: string }) {
           <RichTextEditor.Bold />
           <RichTextEditor.Italic />
         </RichTextEditor.ControlsGroup>
-        <RichTextEditor.ControlsGroup>
-          <ToolbarProvider editor={editor}>
-            <AiToolbar apiKey={apiKey} />
-          </ToolbarProvider>
-        </RichTextEditor.ControlsGroup>
       </RichTextEditor.Toolbar>
       <RichTextEditor.Content />
+      <AiPromptBar
+        editor={editor}
+        onGenerate={async (input) => {
+          const res = await fetch("/api/ai", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(input),
+          });
+          if (!res.ok) throw new Error("AI request failed.");
+          const { text } = await res.json();
+          return text;
+        }}
+      />
     </RichTextEditor>
   );
 }
 ```
 
+## Connect any model
+
+`onGenerate` receives `{ prompt, context, scope, task }` and returns the text or HTML to insert. For presets, `prompt` already holds the task's instruction, so a generic backend handles them without extra code. Keep provider keys on your server and call the model from a route. With the [AI SDK](https://ai-sdk.dev), switching providers is a one-line change:
+
+```ts title="app/api/ai/route.ts"
+import { generateText } from "ai";
+import { openai } from "@ai-sdk/openai";
+// import { anthropic } from "@ai-sdk/anthropic";
+// import { google } from "@ai-sdk/google";
+
+export async function POST(request: Request) {
+  const { prompt, context } = await request.json();
+
+  const { text } = await generateText({
+    model: openai("gpt-4o-mini"),
+    // model: anthropic("claude-sonnet-5-5"),
+    // model: google("gemini-2.5-flash"),
+    system:
+      "You are a writing assistant inside a rich text editor. Follow the instruction about the provided text. Respond with plain text only.",
+    prompt: `Text:\n${context}\n\nInstruction:\n${prompt}`,
+  });
+
+  return Response.json({ text: text.trim() });
+}
+```
+
+Any other backend works the same way — OpenRouter, a local Ollama server, or your own API. Throw an error from `onGenerate` to show its message under the bar.
+
 ## Settings
 
-### `apiKey`
+### `onGenerate`
 
-Your OpenAI API key (BYOK). The button is disabled until a key is provided.
+Called on submit and when a task is picked. Receives the `prompt`, the `context` text, the `scope` (`"selection"` or `"document"`) and the `task` id when a preset was used. Return plain text or HTML to insert.
 
 ```tsx
-<AiToolbar apiKey={apiKey} />
+<AiPromptBar
+  editor={editor}
+  onGenerate={async ({ prompt, context, scope }) =>
+    myBackend.ask(prompt, context)
+  }
+/>
 ```
 
-### `model`
+### `tasks`
 
-OpenAI model id. Defaults to `gpt-4o-mini`.
+Preset actions shown in the **Tasks** menu, grouped by `group`. Defaults to `DEFAULT_AI_TASKS`. `apply: "replace"` replaces the selection (or the whole document when nothing is selected); `apply: "append"` inserts after the selection (or at the end of the document). Pass `[]` to hide the menu.
 
 ```tsx
-<AiToolbar apiKey={apiKey} model="gpt-4o" />
+import { DEFAULT_AI_TASKS } from "@/components/extensions/ai";
+
+<AiPromptBar
+  editor={editor}
+  onGenerate={generate}
+  tasks={[
+    ...DEFAULT_AI_TASKS,
+    {
+      id: "translate",
+      group: "Edit",
+      label: "Translate to Spanish",
+      prompt: "Translate the text to Spanish.",
+      apply: "replace",
+    },
+  ]}
+/>;
 ```
 
-### `endpoint`
+### `disabled`
 
-Proxy endpoint for the OpenAI request. **Required with OpenAI** — browsers block direct calls to `api.openai.com` (no CORS headers). Same-origin paths work as-is:
-
-```tsx
-<AiToolbar apiKey={apiKey} endpoint="/api/ai" />
-```
-
-Example route (`app/api/ai/route.ts`), using the same `ai` + `@ai-sdk/openai` packages. It accepts an `apiKey` from the client or falls back to `OPENAI_API_KEY` env:
+Disables the bar, for example until the user signs in.
 
 ```tsx
-import { createOpenAI } from "@ai-sdk/openai";
-import { generateText } from "ai";
-import { NextResponse } from "next/server";
-
-export const POST = async (request: Request) => {
-  const { apiKey, model = "gpt-4o-mini", prompt, context } =
-    await request.json();
-  const key = apiKey?.trim() || process.env.OPENAI_API_KEY;
-  if (!key) return NextResponse.json({ error: "Missing API key." }, { status: 400 });
-
-  const openai = createOpenAI({ apiKey: key });
-  const { text } = await generateText({
-    model: openai(model),
-    prompt: context ? `Text:\n${context}\n\nInstruction:\n${prompt}` : prompt,
-    system: "You are a writing assistant. Respond with plain text only.",
-  });
-  return NextResponse.json({ text: text.trim() });
-};
+<AiPromptBar editor={editor} onGenerate={generate} disabled={!user} />
 ```
 
 ### `labels`
 
-Override the button tooltip, prompt placeholder, submit label, and missing-key hint.
+Override the prompt placeholder, submit label, Tasks chip and context chip labels.
 
 ```tsx
-<AiToolbar
-  apiKey={apiKey}
+<AiPromptBar
+  editor={editor}
+  onGenerate={generate}
   labels={{ placeholder: "Rewrite this…", submit: "Go" }}
 />
 ```
