@@ -389,12 +389,12 @@ export const Toolbar = ({
   editor: Editor | null;
   state: EditorSnapshot | null;
 }) => (
-  <div className={cn("sticky top-0 z-10 px-3 pt-3 pb-1", CANVAS)}>
+  <div className={cn("sticky top-0 z-10 sm:px-3 sm:pt-3 sm:pb-1", CANVAS)}>
     <div
-      className="mx-auto w-fit max-w-full overflow-x-auto rounded-xl border shadow-sm [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="mx-auto w-full max-w-full overflow-x-auto border-b sm:w-fit sm:rounded-xl sm:border sm:shadow-sm [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       style={SCROLL_SHADOWS}
     >
-      <RichTextEditor.Toolbar className="w-max flex-nowrap! justify-start! border-0! bg-transparent! px-1! py-1! [&>*]:shrink-0">
+      <RichTextEditor.Toolbar className="sm:w-max flex-nowrap! justify-start! border-0! bg-transparent! px-1! py-1! [&>*]:shrink-0 [&_.rte-controls-group>button:not([data-state=on]):not([aria-pressed=true])]:text-foreground!">
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Undo />
           <RichTextEditor.Redo />
@@ -426,5 +426,9 @@ export const Toolbar = ({
         </RichTextEditor.ControlsGroup>
       </RichTextEditor.Toolbar>
     </div>
+    <div
+      aria-hidden
+      className="from-background via-background/80 pointer-events-none absolute inset-x-0 top-full h-6 bg-linear-to-b to-transparent blur-xs sm:hidden"
+    />
   </div>
 );

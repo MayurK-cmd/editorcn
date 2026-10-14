@@ -140,10 +140,10 @@ export const SimpleDocumentEditor = ({
         )}
       >
         <Toolbar editor={editor} state={state} />
-        <article className="bg-background mx-3 mt-4 mb-6 rounded-lg border px-5 py-6 shadow-xs sm:mx-auto sm:max-w-3xl sm:px-14 sm:py-12">
+        <article className="bg-background px-4 py-5 sm:mx-auto sm:mt-4 sm:mb-6 sm:max-w-3xl sm:rounded-lg sm:border sm:px-14 sm:py-12 sm:shadow-xs">
           <input
             aria-label="Document title"
-            className="placeholder:text-muted-foreground/60 mb-4 w-full bg-transparent text-2xl font-bold tracking-tight outline-none sm:text-3xl"
+            className="placeholder:text-muted-foreground/60 mb-3 w-full sm:mb-4 bg-transparent text-2xl font-bold tracking-tight outline-none sm:text-3xl"
             onChange={(e) => {
               setTitle(e.target.value);
               onTitleChange?.(e.target.value);
@@ -156,7 +156,11 @@ export const SimpleDocumentEditor = ({
       </RichTextEditor>
       <TableHoverOverlay editor={editor} />
 
-      <footer className="text-muted-foreground flex h-9 shrink-0 items-center gap-3 border-t px-3 text-xs tabular-nums">
+      <footer className="text-muted-foreground relative flex h-9 shrink-0 items-center gap-3 border-t px-3 text-xs tabular-nums">
+        <div
+          aria-hidden
+          className="from-background via-background/80 pointer-events-none absolute inset-x-0 bottom-full h-6 bg-linear-to-t to-transparent blur-xs sm:hidden"
+        />
         <span>{words.toLocaleString()} words</span>
         <span>{(state?.characters ?? 0).toLocaleString()} characters</span>
         <span className="hidden sm:inline">

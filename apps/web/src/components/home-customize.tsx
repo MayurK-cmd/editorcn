@@ -56,14 +56,14 @@ export const HomeCustomize = ({ className }: { className?: string }) => (
       </p>
     </div>
 
-    <h3 className="mt-16 mb-4 font-medium text-foreground">
+    <h3 className="mt-12 mb-4 font-medium text-foreground sm:mt-16">
       Explore customization
     </h3>
     <div className="grid gap-4 lg:grid-cols-3">
       {FEATURES.map((feature) => (
         <div
           key={feature.title}
-          className="flex flex-col gap-4 rounded-2xl border bg-card p-6"
+          className="flex flex-col gap-4 rounded-2xl border bg-card p-4 sm:p-6"
         >
           <feature.icon className="size-6 text-foreground" />
           <div>
@@ -72,7 +72,9 @@ export const HomeCustomize = ({ className }: { className?: string }) => (
               {feature.description}
             </p>
           </div>
-          <div className="flex-1">{feature.preview}</div>
+          <div className="flex-1 max-sm:[&_.ProseMirror]:min-h-24! max-sm:[&_.ProseMirror]:p-3!">
+            {feature.preview}
+          </div>
           <Link
             href={feature.href}
             prefetch={false}

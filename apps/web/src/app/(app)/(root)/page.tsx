@@ -263,8 +263,10 @@ const PreviewCode = ({
       <TabsTrigger value="code">Code</TabsTrigger>
     </TabsList>
     <TabsContent className="w-full" value="preview">
-      <div className="rounded-xl border bg-muted/30 p-4 sm:p-8">
-        <div className="mx-auto max-w-3xl">{preview}</div>
+      <div className="sm:rounded-xl sm:border sm:bg-muted/30 sm:p-8">
+        <div className="mx-auto max-w-3xl max-sm:[&_.block-editor-content]:max-h-[32rem] max-sm:[&_.block-editor-content]:overflow-y-auto max-sm:[&_.rte-content]:max-h-[28rem] max-sm:[&_.rte-content]:overflow-y-auto">
+          {preview}
+        </div>
       </div>
     </TabsContent>
     <TabsContent className="mx-auto w-full max-w-4xl" value="code">
@@ -295,8 +297,7 @@ export const HomePage = async () => {
               description={
                 <>
                   Ready to use, customizable rich text editor components for
-                  React.
-                  <br className="hidden sm:block" />
+                  React. <br className="hidden sm:block" />
                   Built on Tiptap. Distributed via shadcn.
                 </>
               }
@@ -330,13 +331,19 @@ export const HomePage = async () => {
             defaultValue="templates"
           >
             <TabsList className="h-11 rounded-xl border bg-muted/60 p-1">
-              <TabsTrigger className="rounded-lg px-4" value="editor">
+              <TabsTrigger className="rounded-lg px-3 sm:px-4" value="editor">
                 Toolbar editor
               </TabsTrigger>
-              <TabsTrigger className="rounded-lg px-4" value="block-editor">
+              <TabsTrigger
+                className="rounded-lg px-3 sm:px-4"
+                value="block-editor"
+              >
                 Block editor
               </TabsTrigger>
-              <TabsTrigger className="rounded-lg px-4" value="templates">
+              <TabsTrigger
+                className="rounded-lg px-3 sm:px-4"
+                value="templates"
+              >
                 Templates
               </TabsTrigger>
             </TabsList>
@@ -371,7 +378,7 @@ export const HomePage = async () => {
                 </TabsList>
                 {TEMPLATES.map((t) => (
                   <TabsContent key={t.name} className="w-full" value={t.name}>
-                    <div className="rounded-xl border bg-muted/30 p-4 sm:p-8">
+                    <div className="sm:rounded-xl sm:border sm:bg-muted/30 sm:p-8">
                       <TemplateDemo name={t.name} />
                     </div>
                   </TabsContent>
