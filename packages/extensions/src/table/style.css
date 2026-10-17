@@ -1,6 +1,11 @@
 /* Table extension styles using shadcn CSS variables */
 
-/* ── Hover overlay ── */
+/* ── Hover overlay ──
+   The overlay is a zero-size origin box: the controls are absolutely positioned
+   and measured against it every frame. Keeping it zero-size means the handles
+   never take part in layout, and the component hides them once they would fall
+   outside the editor's visible box, so a table scrolled out of view does not
+   leave handles floating over the surrounding UI. */
 .ext-table-overlay {
   position: absolute;
   left: 0;

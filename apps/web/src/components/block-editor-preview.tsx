@@ -284,7 +284,7 @@ export const BlockEditorPreview = () => {
   });
 
   return (
-    <div className="relative rounded-md border border-border font-inter [&_.ProseMirror]:text-[15px]">
+    <div className="relative overflow-hidden rounded-md border border-border font-inter [&_.ProseMirror]:text-[15px]">
       <BlockEditor
         editor={editor}
         className="px-2"

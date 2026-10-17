@@ -22,24 +22,222 @@ import { DropdownMenuItem } from "../ui/dropdown-item";
 import { DropdownMenu } from "../ui/dropdown-menu";
 import { DropdownMenuSeparator } from "../ui/dropdown-separator";
 
+interface Box {
+  bottom: number;
+  height: number;
+  left: number;
+  right: number;
+  top: number;
+  width: number;
+}
+
 interface TableColumnLayout {
-  center: number;
   left: number;
   width: number;
 }
 
 interface TableRowLayout {
-  center: number;
   height: number;
   top: number;
 }
 
-interface TableRect {
-  height: number;
-  left: number;
-  top: number;
-  width: number;
+/**
+ * Everything the overlay draws for one frame, measured relative to the overlay
+ * box. `visible` is the part of the editor the user can actually see — the
+ * intersection of every scroll/clip container above the editable area. Nothing
+ * is drawn outside it, which is what keeps the grips from floating over the
+ * surrounding UI once a table scrolls out of view.
+ */
+interface OverlayLayout {
+  /** The table edge sits under the scroll box, so trailing handles would land outside the editor. */
+  clippedBottom: boolean;
+  clippedRight: boolean;
+  columns: TableColumnLayout[];
+  rows: TableRowLayout[];
+  /** The table clipped to `visible` — the box the add handles are placed on. */
+  table: Box;
+  visible: Box;
 }
+
+/** Half of a 1.1rem grip, so grips stay fully inside the visible box. */
+const GRIP_INSET = 9;
+/** Footprint of the add handles. */
+const ADD_SIZE = 20;
+/** Gap between the table edge and an add handle. */
+const ADD_GAP = 6;
+/** Tolerance before an edge counts as cut off by the scroll box. */
+const CLIP_EPSILON = 1;
+
+const toBox = (
+  left: number,
+  top: number,
+  right: number,
+  bottom: number
+): Box => ({
+  bottom,
+  height: bottom - top,
+  left,
+  right,
+  top,
+  width: right - left,
+});
+
+const intersect = (a: Box, b: Box): Box =>
+  toBox(
+    Math.max(a.left, b.left),
+    Math.max(a.top, b.top),
+    Math.min(a.right, b.right),
+    Math.min(a.bottom, b.bottom)
+  );
+
+const isCollapsed = (box: Box): boolean => box.width <= 0 || box.height <= 0;
+
+/** Shift a viewport-space box so its coordinates are relative to `origin`. */
+const toLocal = (box: Box, origin: DOMRect): Box =>
+  toBox(
+    box.left - origin.left,
+    box.top - origin.top,
+    box.right - origin.left,
+    box.bottom - origin.top
+  );
+
+/** Visible area of a scroll/clip container, without its borders or scrollbars. */
+const clientBox = (node: HTMLElement): Box => {
+  const r = node.getBoundingClientRect();
+  const left = r.left + node.clientLeft;
+  const top = r.top + node.clientTop;
+  return toBox(left, top, left + node.clientWidth, top + node.clientHeight);
+};
+
+/**
+ * Visible box of the editor in viewport coordinates: the intersection of every
+ * scroll or clip container between the editable area and the document.
+ *
+ * The table node view's `.tableWrapper` is not part of this chain — it hugs the
+ * table, so intersecting with it would cut the row handle under its bottom
+ * padding. Its visible width is applied separately while measuring the table.
+ */
+const visibleBounds = (dom: HTMLElement): Box | null => {
+  let bounds: Box | null = null;
+  for (let node: HTMLElement | null = dom; node; node = node.parentElement) {
+    const style = getComputedStyle(node);
+    if (style.overflowX === "visible" && style.overflowY === "visible") {
+      continue;
+    }
+    const box = clientBox(node);
+    bounds = bounds ? intersect(bounds, box) : box;
+    if (isCollapsed(bounds)) {
+      return null;
+    }
+  }
+  if (bounds) {
+    return bounds;
+  }
+  // Nothing clips the editor, so its own box is the visible area.
+  const r = dom.getBoundingClientRect();
+  return toBox(r.left, r.top, r.right, r.bottom);
+};
+
+/**
+ * Center of the visible slice of `start`/`size` inside `from`/`to`, or `null`
+ * when it is scrolled out entirely. The center is nudged so the grip stays
+ * fully inside the visible box.
+ */
+const fitCenter = (
+  start: number,
+  size: number,
+  from: number,
+  to: number
+): number | null => {
+  const visibleFrom = Math.max(start, from);
+  const visibleTo = Math.min(start + size, to);
+  if (visibleTo - visibleFrom <= 0) {
+    return null;
+  }
+  const min = from + GRIP_INSET;
+  const max = Math.max(min, to - GRIP_INSET);
+  return Math.min(Math.max((visibleFrom + visibleTo) / 2, min), max);
+};
+
+/** Keep a grip that straddles a table edge fully inside the visible box. */
+const fitEdge = (value: number, from: number, to: number): number => {
+  const min = from + GRIP_INSET;
+  const max = Math.max(min, to - GRIP_INSET);
+  return Math.min(Math.max(value, min), max);
+};
+
+const cellChildren = (row: Element): HTMLElement[] =>
+  [...row.children].filter(
+    (cell) => cell.tagName === "TD" || cell.tagName === "TH"
+  ) as HTMLElement[];
+
+/**
+ * Measure the hovered table for one frame, or `null` when it has no visible
+ * part to draw controls for.
+ */
+const measureLayout = (
+  anchor: HTMLElement,
+  dom: HTMLElement,
+  table: HTMLElement
+): OverlayLayout | null => {
+  const clip = visibleBounds(dom);
+  if (!clip || !table.isConnected) {
+    return null;
+  }
+
+  const tRect = table.getBoundingClientRect();
+  let tableBounds = intersect(
+    toBox(tRect.left, tRect.top, tRect.right, tRect.bottom),
+    clip
+  );
+
+  // The node view scrolls wide tables sideways. Measuring the full table width
+  // would drop the trailing `+` handle outside the editor on a scrolled table,
+  // so narrow the table down to what the scroller actually shows.
+  const scroller = table.closest<HTMLElement>(".tableWrapper");
+  if (scroller) {
+    const sRect = scroller.getBoundingClientRect();
+    const sLeft = sRect.left + scroller.clientLeft + scroller.scrollLeft;
+    tableBounds = intersect(
+      tableBounds,
+      toBox(
+        sLeft,
+        tableBounds.top,
+        sLeft + scroller.clientWidth - scroller.scrollLeft,
+        tableBounds.bottom
+      )
+    );
+  }
+
+  if (isCollapsed(tableBounds)) {
+    return null;
+  }
+
+  const anchorRect = anchor.getBoundingClientRect();
+  const rowElements = [...table.querySelectorAll("tr")];
+  let widestCells: HTMLElement[] = [];
+  for (const rowEl of rowElements) {
+    const cells = cellChildren(rowEl);
+    if (cells.length > widestCells.length) {
+      widestCells = cells;
+    }
+  }
+
+  return {
+    clippedBottom: tRect.bottom > clip.bottom + CLIP_EPSILON,
+    clippedRight: tRect.right > clip.right + CLIP_EPSILON,
+    columns: widestCells.map((cell) => {
+      const r = cell.getBoundingClientRect();
+      return { left: r.left - anchorRect.left, width: r.width };
+    }),
+    rows: rowElements.map((rowEl) => {
+      const r = rowEl.getBoundingClientRect();
+      return { height: r.height, top: r.top - anchorRect.top };
+    }),
+    table: toLocal(tableBounds, anchorRect),
+    visible: toLocal(clip, anchorRect),
+  };
+};
 
 interface ColumnControlProps {
   colCenter: number;
@@ -47,7 +245,7 @@ interface ColumnControlProps {
   menuOpen: boolean;
   onOpenChange: (open: boolean) => void;
   runColumnOp: (op: (c: ChainedCommands) => ChainedCommands) => void;
-  tableRect: TableRect;
+  top: number;
 }
 
 const ColumnControl = ({
@@ -56,13 +254,13 @@ const ColumnControl = ({
   menuOpen,
   onOpenChange,
   runColumnOp,
-  tableRect,
+  top,
 }: ColumnControlProps) => (
   <div
     className="ext-table-control ext-table-control--column"
     style={{
       left: colCenter,
-      top: tableRect.top,
+      top,
       transform: "translate(-50%, -50%)",
     }}
   >
@@ -113,25 +311,25 @@ const ColumnControl = ({
 
 interface RowControlProps {
   labels: ExtensionLabels;
+  left: number;
   menuOpen: boolean;
   onOpenChange: (open: boolean) => void;
   rowCenter: number;
   runRowOp: (op: (c: ChainedCommands) => ChainedCommands) => void;
-  tableRect: TableRect;
 }
 
 const RowControl = ({
   labels,
+  left,
   menuOpen,
   onOpenChange,
   rowCenter,
   runRowOp,
-  tableRect,
 }: RowControlProps) => (
   <div
     className="ext-table-control ext-table-control--row"
     style={{
-      left: tableRect.left,
+      left,
       top: rowCenter,
       transform: "translate(-50%, -50%)",
     }}
@@ -180,7 +378,7 @@ interface AddHandlesProps {
   runRowOp: (op: (c: ChainedCommands) => ChainedCommands) => void;
   showColumn: boolean;
   showRow: boolean;
-  tableRect: TableRect;
+  tableRect: Box;
 }
 
 const AddHandles = ({
@@ -200,9 +398,9 @@ const AddHandles = ({
         style={{
           cursor: "col-resize",
           height: tableRect.height,
-          left: tableRect.left + tableRect.width + 6,
+          left: tableRect.left + tableRect.width + ADD_GAP,
           top: tableRect.top,
-          width: 20,
+          width: ADD_SIZE,
         }}
         title={labels.addColumnRight}
         onKeyDown={(e) => {
@@ -223,9 +421,9 @@ const AddHandles = ({
         className="ext-table-add"
         style={{
           cursor: "row-resize",
-          height: 20,
+          height: ADD_SIZE,
           left: tableRect.left,
-          top: tableRect.top + tableRect.height + 6,
+          top: tableRect.top + tableRect.height + ADD_GAP,
           width: tableRect.width,
         }}
         title={labels.addRowBelow}
@@ -243,6 +441,88 @@ const AddHandles = ({
   </>
 );
 
+interface OverlayControlsProps {
+  colMenuOpen: boolean;
+  hoveredCol: number | null;
+  hoveredRow: number | null;
+  labels: ExtensionLabels;
+  layout: OverlayLayout | null;
+  onColMenuOpenChange: (open: boolean) => void;
+  onRowMenuOpenChange: (open: boolean) => void;
+  rowMenuOpen: boolean;
+  runColumnOp: (op: (c: ChainedCommands) => ChainedCommands) => void;
+  runRowOp: (op: (c: ChainedCommands) => ChainedCommands) => void;
+}
+
+const OverlayControls = ({
+  colMenuOpen,
+  hoveredCol,
+  hoveredRow,
+  labels,
+  layout,
+  onColMenuOpenChange,
+  onRowMenuOpenChange,
+  rowMenuOpen,
+  runColumnOp,
+  runRowOp,
+}: OverlayControlsProps) => {
+  if (!layout) {
+    return null;
+  }
+
+  const { clippedBottom, clippedRight, columns, rows, table, visible } = layout;
+  const column = hoveredCol === null ? undefined : columns[hoveredCol];
+  const row = hoveredRow === null ? undefined : rows[hoveredRow];
+
+  // Derived from the measured layout every frame, so the grips follow the table
+  // while it scrolls or resizes instead of freezing on the cell that was hovered
+  // when they appeared.
+  const colCenter = column
+    ? fitCenter(column.left, column.width, visible.left, visible.right)
+    : null;
+  const rowCenter = row
+    ? fitCenter(row.top, row.height, visible.top, visible.bottom)
+    : null;
+
+  // A trailing handle belongs to the last row/column, and only while that edge
+  // is on screen — otherwise it would sit outside the editor.
+  const showColumn = colCenter !== null && hoveredCol === columns.length - 1;
+  const showRow = rowCenter !== null && hoveredRow === rows.length - 1;
+
+  return (
+    <>
+      {colCenter !== null && (
+        <ColumnControl
+          colCenter={colCenter}
+          labels={labels}
+          menuOpen={colMenuOpen}
+          onOpenChange={onColMenuOpenChange}
+          runColumnOp={runColumnOp}
+          top={fitEdge(table.top, visible.top, visible.bottom)}
+        />
+      )}
+      {rowCenter !== null && (
+        <RowControl
+          labels={labels}
+          left={fitEdge(table.left, visible.left, visible.right)}
+          menuOpen={rowMenuOpen}
+          onOpenChange={onRowMenuOpenChange}
+          rowCenter={rowCenter}
+          runRowOp={runRowOp}
+        />
+      )}
+      <AddHandles
+        labels={labels}
+        runColumnOp={runColumnOp}
+        runRowOp={runRowOp}
+        showColumn={showColumn && clippedRight === false}
+        showRow={showRow && clippedBottom === false}
+        tableRect={table}
+      />
+    </>
+  );
+};
+
 export const TableHoverOverlay = ({
   editor: editorProp,
 }: ToolbarComponentProps) => {
@@ -253,24 +533,22 @@ export const TableHoverOverlay = ({
   const activeTableRef = useRef<HTMLElement | null>(null);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const [tableRect, setTableRect] = useState<TableRect | null>(null);
-  const [columns, setColumns] = useState<TableColumnLayout[]>([]);
-  const [rows, setRows] = useState<TableRowLayout[]>([]);
+  const [layout, setLayout] = useState<OverlayLayout | null>(null);
   const [hoveredCol, setHoveredCol] = useState<number | null>(null);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [colMenuOpen, setColMenuOpen] = useState(false);
   const [rowMenuOpen, setRowMenuOpen] = useState(false);
-  const [colCenter, setColCenter] = useState(0);
-  const [rowCenter, setRowCenter] = useState(0);
 
   const isEditable = editor?.isEditable ?? false;
   const hasTable = editor ? extensionPresent(editor, "table") : false;
-  const isVisible = tableRect !== null;
+  // The measure loop runs while a table is hovered, not while it is laid out.
+  // A table scrolled out of view has no layout to show, and stopping the loop
+  // there would leave it blank when it scrolls back in.
+  const isActive = hoveredCol !== null || hoveredRow !== null;
 
   const scheduleHide = useCallback(() => {
     hideTimer.current = setTimeout(() => {
       activeTableRef.current = null;
-      setTableRect(null);
       setHoveredCol(null);
       setHoveredRow(null);
       setColMenuOpen(false);
@@ -288,50 +566,11 @@ export const TableHoverOverlay = ({
   const recompute = useCallback(() => {
     const table = activeTableRef.current;
     const anchor = anchorRef.current;
-    if (!table || !anchor || !table.isConnected) {
-      setTableRect(null);
-      return;
-    }
-    const aRect = anchor.getBoundingClientRect();
-    const tRect = table.getBoundingClientRect();
-
-    const rowElements = [...table.querySelectorAll("tr")];
-    let widestCells: HTMLElement[] = [];
-    for (const rowEl of rowElements) {
-      const cells = [...rowEl.children].filter(
-        (cell) => cell.tagName === "TD" || cell.tagName === "TH"
-      ) as HTMLElement[];
-      if (cells.length > widestCells.length) {
-        widestCells = cells;
-      }
-    }
-
-    const nextColumns = widestCells.map((cell) => {
-      const r = cell.getBoundingClientRect();
-      return {
-        center: r.left + r.width / 2 - aRect.left,
-        left: r.left - aRect.left,
-        width: r.width,
-      };
-    });
-    const nextRows = rowElements.map((rowEl) => {
-      const r = rowEl.getBoundingClientRect();
-      return {
-        center: r.top + r.height / 2 - aRect.top,
-        height: r.height,
-        top: r.top - aRect.top,
-      };
-    });
-
-    setTableRect({
-      height: tRect.height,
-      left: tRect.x - aRect.x,
-      top: tRect.y - aRect.y,
-      width: tRect.width,
-    });
-    setColumns(nextColumns);
-    setRows(nextRows);
-  }, []);
+    const dom = editor?.view.dom as HTMLElement | undefined;
+    setLayout(
+      table && anchor && dom ? measureLayout(anchor, dom, table) : null
+    );
+  }, [editor]);
 
   useEffect(() => {
     if (!editor || editor.isDestroyed) {
@@ -358,6 +597,15 @@ export const TableHoverOverlay = ({
       const cell = target.closest?.("td, th") as HTMLElement | undefined;
       const table = cell?.closest?.("table") as HTMLElement | undefined;
       if (!cell || !table) {
+        // The pointer is in the wrapper's scroll gutter, not on a cell. The
+        // handles stay where they are — that is intentional — unless this
+        // belongs to a different table than the active one.
+        if (
+          activeTableRef.current &&
+          !tableWrapper.contains(activeTableRef.current)
+        ) {
+          scheduleHide();
+        }
         return;
       }
 
@@ -373,13 +621,6 @@ export const TableHoverOverlay = ({
       }
       if (rowIdx >= 0) {
         setHoveredRow(rowIdx);
-      }
-
-      const cellRect = cell.getBoundingClientRect();
-      const anchor = anchorRef.current?.getBoundingClientRect();
-      if (anchor) {
-        setColCenter(cellRect.left + cellRect.width / 2 - anchor.left);
-        setRowCenter(cellRect.top + cellRect.height / 2 - anchor.top);
       }
 
       recompute();
@@ -418,7 +659,7 @@ export const TableHoverOverlay = ({
   }, [editor, recompute, cancelHide, scheduleHide]);
 
   useEffect(() => {
-    if (!isVisible) {
+    if (!isActive) {
       return;
     }
     let frame: number;
@@ -430,7 +671,7 @@ export const TableHoverOverlay = ({
     return () => {
       cancelAnimationFrame(frame);
     };
-  }, [isVisible, recompute]);
+  }, [isActive, recompute]);
 
   const cellAt = (rowIdx: number, colIdx: number): HTMLElement | undefined => {
     const table = activeTableRef.current;
@@ -490,40 +731,18 @@ export const TableHoverOverlay = ({
 
   return (
     <div ref={anchorRef} className="ext-table-overlay">
-      {tableRect ? (
-        <>
-          {hoveredCol !== null && columns[hoveredCol] ? (
-            <ColumnControl
-              colCenter={colCenter}
-              labels={labels}
-              menuOpen={colMenuOpen}
-              onOpenChange={handleColMenuOpen}
-              runColumnOp={runColumnOp}
-              tableRect={tableRect}
-            />
-          ) : null}
-          {hoveredRow !== null && rows[hoveredRow] ? (
-            <RowControl
-              labels={labels}
-              menuOpen={rowMenuOpen}
-              onOpenChange={handleRowMenuOpen}
-              rowCenter={rowCenter}
-              runRowOp={runRowOp}
-              tableRect={tableRect}
-            />
-          ) : null}
-          <AddHandles
-            labels={labels}
-            runColumnOp={runColumnOp}
-            runRowOp={runRowOp}
-            showColumn={
-              hoveredCol !== null && hoveredCol === columns.length - 1
-            }
-            showRow={hoveredRow !== null && hoveredRow === rows.length - 1}
-            tableRect={tableRect}
-          />
-        </>
-      ) : null}
+      <OverlayControls
+        colMenuOpen={colMenuOpen}
+        hoveredCol={hoveredCol}
+        hoveredRow={hoveredRow}
+        labels={labels}
+        layout={layout}
+        onColMenuOpenChange={handleColMenuOpen}
+        onRowMenuOpenChange={handleRowMenuOpen}
+        rowMenuOpen={rowMenuOpen}
+        runColumnOp={runColumnOp}
+        runRowOp={runRowOp}
+      />
     </div>
   );
 };
