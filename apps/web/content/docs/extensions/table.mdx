@@ -124,7 +124,7 @@ function MyBlockEditor() {
   });
 
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative">
       <BlockEditor editor={editor} />
       <TableHoverOverlay editor={editor} />
     </div>
@@ -132,7 +132,9 @@ function MyBlockEditor() {
 }
 ```
 
-Render `TableHoverOverlay` next to `BlockEditor`, inside a container that is both positioned (`relative`) and clipped (`overflow-hidden`). The overlay measures its controls against the editor's visible box, so a table that scrolls out of view drops its handles instead of leaving them floating over the surrounding UI — but the positioned, clipping container keeps them from painting outside the editor in the first place. Its hover handles on the hovered row and column are what add or delete rows and columns, merge or split cells, and toggle the header row — the `TableToolbar` control is only needed in toolbar editors.
+Render `TableHoverOverlay` next to `BlockEditor`, inside a positioned (`relative`) container so the overlay anchors to the editor. The overlay measures its controls against the editor's visible box and clips them to it, so a table that scrolls out of view drops its handles instead of leaving them floating over the surrounding UI. Its hover handles on the hovered row and column are what add or delete rows and columns, merge or split cells, and toggle the header row — the `TableToolbar` control is only needed in toolbar editors.
+
+Do not put `overflow-hidden` on that container: the editor's own bubble menu and drag handle are positioned inside it and would be clipped along with the table handles.
 
 ## Settings
 
